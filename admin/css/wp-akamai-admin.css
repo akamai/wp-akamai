@@ -1,0 +1,26 @@
+.akamai-content {
+    margin: -14px 0 0 -20px;
+    height: auto;
+    min-height: 100%;
+    left: 0;
+    right: 0;
+    -webkit-font-smoothing: antialiased;
+}
+
+.akamai-content .wrap {
+    padding-left: 14px;
+}
+
+.akamai-content header {
+    margin: 0;
+    padding: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background-size: cover;
+    background: #ff9200 url(../../assets/banner-1544x500.jpg) no-repeat 0 10px;
+}
+
+.akamai-content header h1 {
+    display: none;
+}

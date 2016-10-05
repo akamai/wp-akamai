@@ -1,0 +1,16 @@
+{
+    "name": "akamai-open/wp-akamai",
+    "description": "Akamai for WordPress Plugin",
+    "type": "wordpress-plugin",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Davey Shafik",
+            "email": "dshafik@akamai.com"
+        }
+    ],
+    "require": {
+        "composer/installers": "^1.0",
+        "akamai-open/edgegrid-client": "^0.4.4"
+    }
+}

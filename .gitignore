@@ -1,0 +1,14 @@
+/vendor/bin/
+/vendor/composer/
+/vendor/guzzlehttp/
+/vendor/league/
+/vendor/monolog/
+/vendor/autoload.php
+/vendor/seld/
+/vendor/psr/
+/vendor/akamai-open/edgegrid-client/*
+!/vendor/akamai-open/edgegrid-client/src
+!/vendor/akamai-open/edgegrid-client/CHANGELOG.md
+!/vendor/akamai-open/edgegrid-client/LICENSE
+!/vendor/akamai-open/edgegrid-client/README.md
+!/vendor/akamai-open/edgegrid-client/composer.*
