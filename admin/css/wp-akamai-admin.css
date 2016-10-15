@@ -17,8 +17,8 @@
     left: 0;
     right: 0;
     height: 200px;
-    background-size: cover;
-    background: #ff9200 url(../../assets/banner-1544x500.jpg) no-repeat 0 10px;
+    background-size: cover !important;
+    background: #133947 url(../../assets/banner-4632x1500.jpg) no-repeat 0 15px;
 }
 
 .akamai-content header h1 {
