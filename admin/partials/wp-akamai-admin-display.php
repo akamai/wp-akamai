@@ -38,8 +38,7 @@ $options = get_option( $this->plugin_name );
 							}
 							$paths[] = 'the current working directory';
 							?>
-							<span class="description">By default, we'll look in <?= implode( ' and ', $paths ); ?>
-								.</span>
+							<span class="description">By default, we'll look in <?= implode( ' and ', $paths ); ?>.</span>
 						</td>
 					</tr>
 					<tr>
