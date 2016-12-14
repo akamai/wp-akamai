@@ -1,6 +1,5 @@
 === Akamai for WordPress ===
 Contributors: dshafik
-Donate link: https://daveyshafik.com
 Tags: akamai, cache, purge, cdn
 Requires at least: 4.3
 Tested up to: 4.6

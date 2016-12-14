@@ -9,15 +9,16 @@
  * that starts the plugin.
  *
  * @link              https://developer.akamai.com
- * @since             0.1.0
+ * @since             0.2.0
  * @package           Wp_Akamai
+ * @author            Davey Shafik <dshafik@akamai.com>
  *
  * @wordpress-plugin
  * Plugin Name:       Akamai for WordPress
  * Plugin URI:        http://github.com/akamai-open/wp-akamai
  * Description:       Akamai for WordPress Plugin. Control Akamai CDN and more.
- * Version:           0.1.0
- * Author:            Davey Shafik
+ * Version:           0.2.0
+ * Author:            Akamai Technologies
  * Author URI:        https://developer.akamai.com
  * License:           Apache-2.0
  * License URI:       http://www.apache.org/licenses/LICENSE-2.0.txt
