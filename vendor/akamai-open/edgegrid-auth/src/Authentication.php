@@ -6,7 +6,7 @@
  * {@see https://developer.akamai.com/introduction/Client_Auth.html}
  *
  * @author Davey Shafik <dshafik@akamai.com>
- * @copyright Copyright 2015 Akamai Technologies, Inc. All rights reserved.
+ * @copyright Copyright 2016 Akamai Technologies, Inc. All rights reserved.
  * @license Apache 2.0
  * @link https://github.com/akamai-open/edgegrid-auth-php
  * @link https://developer.akamai.com
@@ -16,13 +16,13 @@ namespace Akamai\Open\EdgeGrid;
 
 use Akamai\Open\EdgeGrid\Authentication\Nonce;
 use Akamai\Open\EdgeGrid\Authentication\Timestamp;
-use Akamai\Open\EdgeGrid\Exception\ConfigException;
-use Akamai\Open\EdgeGrid\Exception\SignerException\InvalidSignDataException;
+use Akamai\Open\EdgeGrid\Authentication\Exception\ConfigException;
+use Akamai\Open\EdgeGrid\Authentication\Exception\SignerException\InvalidSignDataException;
 
 /**
  * Akamai {OPEN} EdgeGrid Request Signer
  *
- * @package Akamai {OPEN} EdgeGrid Auth
+ * @package \Akamai\Open\EdgeGrid\Authentication
  */
 class Authentication
 {
@@ -114,13 +114,13 @@ class Authentication
     }
 
     /**
-     * Get the request host
+     * Get request HTTP method
      *
      * @return string
      */
-    public function getHost()
+    public function getHttpMethod()
     {
-        return $this->host;
+        return $this->httpMethod;
     }
 
     /**
@@ -155,6 +155,16 @@ class Authentication
     }
 
     /**
+     * Get the request host
+     *
+     * @return string
+     */
+    public function getHost()
+    {
+        return $this->host;
+    }
+
+    /**
      * Set Guzzle config
      *
      * This is a convenient way to pass in the
@@ -170,12 +180,25 @@ class Authentication
     }
 
     /**
+     * Get Authentication config array
+     *
+     * @return array
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
      * Set GET args
      *
      * If setting to a string, you MUST encode using RFC3986
-     * {@see http_build_query()}
+     * {@see http_build_query()}. When passing in a string,
+     * this method will re-encode using RFC3986 unless you
+     * explicitly pass in false as the second argument.
      *
      * @param array|string $query
+     * @param bool $ensure_encoding
      * @return $this
      */
     public function setQuery($query, $ensure_encoding = true)
@@ -183,10 +206,23 @@ class Authentication
         if (is_string($query) && $ensure_encoding) {
             $query_args = array();
             parse_str($query, $query_args);
-            $query = http_build_query($query_args, null, '&', PHP_QUERY_RFC3986);
+            $query = $this->buildQueryString($query_args);
         }
         $this->config['query'] = $query;
         return $this;
+    }
+
+    /**
+     * Get request query string
+     *
+     * The return value will match
+     * the type passed in to setQuery().
+     *
+     * @return string|array
+     */
+    public function getQuery()
+    {
+        return isset($this->config['query']) ? $this->config['query'] : '';
     }
 
     /**
@@ -202,6 +238,16 @@ class Authentication
     }
 
     /**
+     * Get request body
+     *
+     * @return string
+     */
+    public function getBody()
+    {
+        return isset($this->config['body']) ? $this->config['body'] : '';
+    }
+
+    /**
      * Set request headers
      *
      * @param array $headers
@@ -211,6 +257,16 @@ class Authentication
     {
         $this->config['headers'] = $headers;
         return $this;
+    }
+
+    /**
+     * Get request headers
+     *
+     * @return array
+     */
+    public function getHeaders()
+    {
+        return isset($this->config['header']) ? $this->config['header'] : array();
     }
 
     /**
@@ -234,6 +290,11 @@ class Authentication
         return $this;
     }
 
+    /**
+     * Get request path
+     *
+     * @return string
+     */
     public function getPath()
     {
         return $this->path;
@@ -307,6 +368,15 @@ class Authentication
         return $this;
     }
 
+    /**
+     * Create instance using an .edgerc configuration file
+     *
+     * @param string $section
+     * @param string|null $path
+     *
+     * @return static
+     * @throws ConfigException
+     */
     public static function createFromEdgeRcFile($section = "default", $path = null)
     {
         if ($section === null) {
@@ -347,10 +417,13 @@ class Authentication
         $canonical = array();
         $headers = array();
         if (isset($this->config['headers'])) {
-            $headers = array_combine(
-                array_map('strtolower', array_keys($this->config['headers'])),
-                array_values($this->config['headers'])
-            );
+            $headers = array_map('strtolower', array_keys($this->config['headers']));
+            if (sizeof($this->config['headers']) > 0) {
+                $headers = array_combine(
+                    $headers,
+                    array_values($this->config['headers'])
+                );
+            }
         }
 
         foreach ($this->headers_to_sign as $key) {
@@ -433,7 +506,7 @@ class Authentication
             if (is_string($this->config['query'])) {
                 $query .= $this->config['query'];
             } else {
-                $query .= http_build_query($this->config['query'], null, '&', PHP_QUERY_RFC3986);
+                $query .= $this->buildQueryString($this->config['query']);
             }
         }
 
@@ -480,7 +553,7 @@ class Authentication
      *
      * @param $path
      * @return array
-     * @throws \Exception
+     * @throws ConfigException
      */
     protected static function parseEdgeRcFile($path)
     {
@@ -508,5 +581,18 @@ class Authentication
         $ini = parse_ini_string($ini, true, INI_SCANNER_RAW);
 
         return $ini;
+    }
+
+    /**
+     * @param $query
+     *
+     * @return string
+     */
+    protected function buildQueryString($query) {
+        if ( defined( 'PHP_QUERY_RFC3986' ) ) {
+            return http_build_query( $query, null, '&', PHP_QUERY_RFC3986 );
+        }
+
+        return str_replace( '+', '%20', http_build_query($query, null, '&' ) );
     }
 }

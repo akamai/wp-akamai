@@ -1,0 +1,21 @@
+### PHP ###
+composer.phar
+vendor/
+build/
+akamai-open-edgegrid-auth*.phar
+
+### IntelliJ ###
+*.iml
+.idea/
+*.ipr
+*.iws
+
+### OS X ###
+.DS_Store
+.AppleDouble
+.LSOverride
+
+### Windows ###
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
