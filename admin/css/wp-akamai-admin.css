@@ -18,9 +18,29 @@
     right: 0;
     height: 200px;
     background-size: cover !important;
-    background: #133947 url(../../assets/banner-4632x1500.jpg) no-repeat 0 15px;
+    background-color: #133947;
+    background-repeat: no-repeat;
+    background-position: 0 15px;
 }
 
 .akamai-content header h1 {
     display: none;
+}
+
+@media only screen and (max-width: 772px) {
+    .akamai-content header {
+        background-image: url(../../assets/banner-772x250.jpg);
+    }
+}
+
+@media only screen and (max-width: 1544px) and (min-width: 773px) {
+    .akamai-content header {
+        background-image: url(../../assets/banner-1544x500.jpg);
+    }
+}
+
+@media only screen and (min-width: 1545px) {
+    .akamai-content header {
+        background-image: url(../../assets/banner-4632x1500.jpg);
+    }
 }
