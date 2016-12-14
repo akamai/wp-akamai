@@ -45,13 +45,13 @@ if ( version_compare( phpversion(), WP_AKAMAI_MIN_PHP, '<' ) ) {
 	return false;
 }
 
-require_once 'vendor/akamai-open/edgegrid-client/src/Authentication.php';
-require_once 'vendor/akamai-open/edgegrid-client/src/Authentication/Timestamp.php';
-require_once 'vendor/akamai-open/edgegrid-client/src/Authentication/Nonce.php';
-require_once 'vendor/akamai-open/edgegrid-client/src/Exception.php';
-require_once 'vendor/akamai-open/edgegrid-client/src/Exception/ConfigException.php';
-require_once 'vendor/akamai-open/edgegrid-client/src/Exception/SignerException.php';
-require_once 'vendor/akamai-open/edgegrid-client/src/Exception/SignerException/InvalidSignDataException.php';
+require_once 'vendor/akamai-open/edgegrid-auth/src/Authentication.php';
+require_once 'vendor/akamai-open/edgegrid-auth/src/Authentication/Timestamp.php';
+require_once 'vendor/akamai-open/edgegrid-auth/src/Authentication/Nonce.php';
+require_once 'vendor/akamai-open/edgegrid-auth/src/Authentication/Exception.php';
+require_once 'vendor/akamai-open/edgegrid-auth/src/Authentication/Exception/ConfigException.php';
+require_once 'vendor/akamai-open/edgegrid-auth/src/Authentication/Exception/SignerException.php';
+require_once 'vendor/akamai-open/edgegrid-auth/src/Authentication/Exception/SignerException/InvalidSignDataException.php';
 
 /**
  * The code that runs during plugin activation.
