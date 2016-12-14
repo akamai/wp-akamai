@@ -294,11 +294,6 @@ class Wp_Akamai {
 
 		$wpurl = parse_url( get_bloginfo( 'wpurl' ) );
 		$host  = $wpurl['host'];
-//		if ( isset( $wpurl['port'] ) && ! in_array( $wpurl['port'], array( '80', '443' ) ) ) {
-//			$host .= ':' . $wpurl['port'];
-//
-//			return $host;
-//		}
 
 		return $host;
 	}
