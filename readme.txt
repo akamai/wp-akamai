@@ -52,6 +52,12 @@ In addition, there is a strictly enforced 50,000 byte limit on the size of each 
 
 == Changelog ==
 
+= 0.3 =
+* Add support for purging on comments
+
+= 0.2 =
+* Use latest Akamai libraries
+
 = 0.1 =
 * Initial release
 
