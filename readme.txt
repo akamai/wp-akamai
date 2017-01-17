@@ -11,12 +11,9 @@ The Akamai for WordPress plugin integrates automatically with Akamai to purge th
 
 == Description ==
 
-The Akamai for WordPress plugin will automatically purge the cache using the new Fast Purge feature whenever you create
-or update a post.
+The Akamai for WordPress plugin will automatically purge the cache using the new Fast Purge feature whenever you create or update a post.
 
-With the Fast Purge API, you can automate your publishing flow to maximize performance and offload without compromising
-on freshness. Switching to a Hold ‘Til Told methodology, you can cache semi-dynamic content with long TTLs, and then
-refresh it in approximately 5 seconds with Fast Purge.
+With the Fast Purge API, you can automate your publishing flow to maximize performance and offload without compromising on freshness. Switching to a Hold ‘Til Told methodology, you can cache semi-dynamic content with long TTLs, and then refresh it in approximately 5 seconds with Fast Purge.
 
 == Installation ==
 
@@ -32,8 +29,7 @@ The purge request is almost instantaneous, and the purge itself is completed wit
 
 = What is purged? =
 
-By default, the front page, and the individual post page are purged. You can additionally
-enable purging of tag, category, and monthly archives.
+By default, the front page, and the individual post page are purged. You can additionally enable purging of tag, category, and monthly archives.
 
 = What are the limitations? =
 
