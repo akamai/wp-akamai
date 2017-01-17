@@ -78,6 +78,22 @@ $options = get_option( $this->plugin_name );
 					</tr>
 					<tr>
 						<th scope="row">
+							<label for="<?php echo $this->plugin_name; ?>-purge-comments">
+								<?php _e( 'Purge On Comment', $this->plugin_name ); ?>
+							</label>
+						</th>
+						<td>
+							<input type="checkbox" id="<?php echo $this->plugin_name; ?>-purge-comments"
+							       name="<?php echo $this->plugin_name; ?>[purge_comments]"
+							       value="1" <?php checked( $options['purge_comments'] ); ?>"/>
+
+							<label for="<?php echo $this->plugin_name; ?>-purge-comments">
+								<span class="description">Purge relevant content when a successful comment is submitted</span>
+							</label>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">
 							<label for="<?php echo $this->plugin_name; ?>-purge-tags">
 								<?php _e( 'Purge Related Tag Archives', $this->plugin_name ); ?>
 							</label>

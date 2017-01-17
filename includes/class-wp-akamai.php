@@ -136,10 +136,10 @@ class Wp_Akamai {
 		$this->loader->add_action( 'wp_ajax_akamai_verify_credentials', $plugin_admin, 'verify_credentials' );
 
 		// Purging Actions/Hooks
-		$this->loader->add_action( 'save_post', $this, 'purge' );
+		$this->loader->add_action( 'save_post', $this, 'purgeOnPost' );
+		$this->loader->add_action( 'comment_post', $this, 'purgeOnPost', 10, 3 );
 		$this->loader->add_action( 'admin_notices', $this, 'admin_notices' );
-
-
+		$this->loader->add_action( 'send_headers', $this, 'sendHeaders' );
 	}
 
 	/**
@@ -187,7 +187,7 @@ class Wp_Akamai {
 	 *
 	 * @return bool
 	 */
-	public function purge( $post_ID ) {
+	public function purgeOnPost($post_ID ) {
 		$post = get_post( $post_ID );
 		if ( ! is_object( $post ) || $post->post_status != 'publish' ) {
 			return true;
@@ -195,27 +195,19 @@ class Wp_Akamai {
 
 		$options = get_option( $this->plugin_name );
 
-		$body = $this->get_purge_body( $options, $post );
-		$auth = $this->get_purge_auth( $options, $body );
+		$options['purge_front'] = true;
 
-		$response = wp_remote_post( 'https://' . $auth->getHost() . $auth->getPath(), array(
-			'user-agent' => $this->get_user_agent(),
-			'headers'    => array(
-				'Authorization' => $auth->createAuthHeader(),
-				'Content-Type'  => 'application/json',
-			),
-			'body'       => $body
-		) );
+		$this->purge($options, $post);
+	}
 
-		if ( wp_remote_retrieve_response_code( $response ) != 201 ) {
-			$instance = $this;
-			add_filter( 'redirect_post_location', function ( $location ) use ( $instance, $response ) {
-				$body = json_decode( wp_remote_retrieve_body( $response ) );
+	public function purgeOnComment($comment_ID, $comment_approved, $comment_data) {
+		if ($comment_approved == 1) {
+			$options = get_option( $this->plugin_name );
 
-				return $instance->add_error_query_arg( $location, $body );
-			}, 100 );
-		} else {
-			add_filter( 'redirect_post_location', array( $this, 'add_success_query_arg' ), 100 );
+			if ( $options['purge_comments'] ) {
+				$post = get_post($comment_data['comment_post_ID']);
+				$this->purge($options, $post);
+			}
 		}
 	}
 
@@ -230,9 +222,12 @@ class Wp_Akamai {
 		$permalink = get_permalink( $post->ID );
 
 		$objects = array(
-			$baseUrl, // Frontpage,
 			$this->get_item_url( $permalink ), // Post
 		);
+
+		if ( $options['purge_front'] ) {
+			$objects[] = $baseUrl;
+		}
 
 		$host = $this->get_hostname($options);
 
@@ -356,6 +351,36 @@ class Wp_Akamai {
 				</p>
 			</div>
 			<?php
+		}
+	}
+
+	/**
+	 * @param $options
+	 * @param $post
+	 */
+	protected function purge($options, $post)
+	{
+		$body = $this->get_purge_body($options, $post);
+		$auth = $this->get_purge_auth($options, $body);
+
+		$response = wp_remote_post('https://' . $auth->getHost() . $auth->getPath(), array(
+			'user-agent' => $this->get_user_agent(),
+			'headers' => array(
+				'Authorization' => $auth->createAuthHeader(),
+				'Content-Type' => 'application/json',
+			),
+			'body' => $body
+		));
+
+		if (wp_remote_retrieve_response_code($response) != 201) {
+			$instance = $this;
+			add_filter('redirect_post_location', function ($location) use ($instance, $response) {
+				$body = json_decode(wp_remote_retrieve_body($response));
+
+				return $instance->add_error_query_arg($location, $body);
+			}, 100);
+		} else {
+			add_filter('redirect_post_location', array($this, 'add_success_query_arg'), 100);
 		}
 	}
 }

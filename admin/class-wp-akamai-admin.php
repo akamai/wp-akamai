@@ -200,6 +200,7 @@ class Wp_Akamai_Admin {
 			'edgerc'           => null,
 			'section'          => 'default',
 			'hostname'         => '',
+            'purge_comemnts'   => 1,
 			'purge_tags'       => 1,
 			'purge_categories' => 1,
 			'purge_archives'   => 1,
@@ -229,7 +230,7 @@ class Wp_Akamai_Admin {
 			$valid['section'] = $input['section'];
 		}
 
-		foreach ( array( 'purge_tags', 'purge_categories', 'purge_archives' ) as $checkbox ) {
+		foreach ( array( 'purge_comments', 'purge_tags', 'purge_categories', 'purge_archives' ) as $checkbox ) {
 			$valid[ $checkbox ] = 0;
 			if ( isset( $input[ $checkbox ] ) && ! empty( $input[ $checkbox ] ) ) {
 				$valid[ $checkbox ] = 1;
