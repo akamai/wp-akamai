@@ -2,45 +2,31 @@
   "alias": "akamai-open-edgegrid-auth.phar",
   "algorithm": "SHA512",
   "directories": [
-    "src"
+    "src",
+    "vendor/composer"
   ],
   "files": [
     "LICENSE",
     "README.md",
-    "vendor/autoload.php"
+    "CHANGELOG.md"
   ],
   "finder": [
     {
       "name": "*.php",
       "exclude": [
+        "bin",
+        "docs",
+        "examples",
         "Tests",
         "tests",
-        "fabpot",
-        "doctrine",
-        "phine",
-        "phpdocumentor",
-        "phploc",
-        "phpspec",
-        "sebastian",
-        "seld",
-        "squizlabs",
-        "tedivm",
-        "theseer",
-        "kherge",
-        "justinrainbow",
-        "phine",
-        "mikey179",
-        "phpunit",
-        "herrera-io/annotations",
-        "herrera-io/box",
-        "herrera-io/version"
+        "tools"
       ],
       "in": "vendor"
     }
   ],
+  "compression": "BZ2",
   "bootstrap": "build/phar/bootstrap.php",
   "git-version": "package_version",
   "output": "akamai-open-edgegrid-auth.phar",
-  "stub": "build/phar/stub.php",
-  "shebang": "#!/usr/bin/env php"
+  "stub": "build/phar/stub.php"
 }

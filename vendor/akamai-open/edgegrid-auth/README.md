@@ -50,8 +50,14 @@ the latest [ZIP archive](https://github.com/akamai-open/AkamaiOPEN-edgegrid-php/
 
 To use the composer autoloader, you must install the dependencies using:
 
-```php
+```sh
 $ composer install
+```
+
+Then include the autoloader:
+
+```php
+require_once 'vendor/autoload.php';
 ```
 
 #### Without Composer Autoloader
@@ -70,7 +76,9 @@ require_once 'src/Authentication/Exception/SignerException/InvalidSignDataExcept
 
 ### Usage
 
-Once you have installed the library, you can create the header value by calling the appropriate [`\Akamai\Open\Edgegrid\Authentication::set*()` methods](https://akamai-open.github.io/AkamaiOPEN-edgegrid-php/classes/Akamai_Open_EdgeGrid_Authentication.html#methods). For example, using it with the built-in streams HTTP client might look like the following:
+Once you have installed the library, you can create the header value by calling the appropriate
+[`\Akamai\Open\Edgegrid\Authentication::set*()` methods](https://akamai-open.github.io/AkamaiOPEN-edgegrid-php-client/class-Akamai.Open.EdgeGrid.Authentication.html#methods).
+For example, using it with the built-in streams HTTP client might look like the following:
 
 ```php
 $auth = \Akamai\Open\EdgeGrid\Authentication::createFromEdgeRcFile('default', '/.edgerc');
@@ -97,7 +105,7 @@ Davey Shafik <dshafik@akamai.com>
 
 ## License
 
-Copyright 2016Authentication/ Akamai Technologies, Inc.  All rights reserved.
+Copyright 2016 Akamai Technologies, Inc.  All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

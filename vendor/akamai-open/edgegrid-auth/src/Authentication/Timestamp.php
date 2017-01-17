@@ -5,7 +5,7 @@
  * @author Davey Shafik <dshafik@akamai.com>
  * @copyright Copyright 2016 Akamai Technologies, Inc. All rights reserved.
  * @license Apache 2.0
- * @link https://github.com/akamai-open/edgegrid-auth-php
+ * @link https://github.com/akamai-open/AkamaiOPEN-edgegrid-php
  * @link https://developer.akamai.com
  * @link https://developer.akamai.com/introduction/Client_Auth.html
  */
@@ -18,6 +18,8 @@ namespace Akamai\Open\EdgeGrid\Authentication;
  */
 class Timestamp
 {
+    const FORMAT = 'Ymd\TH:i:sO';
+
     /**
      * @var \DateTime Signing Timestamp
      */
@@ -33,7 +35,7 @@ class Timestamp
      */
     public function __construct()
     {
-        $this->timestamp = new \DateTime("now", new \DateTimeZone('UTC'));
+        $this->timestamp = new \DateTime('now', new \DateTimeZone('UTC'));
     }
 
     /**
@@ -43,7 +45,7 @@ class Timestamp
      */
     public function isValid()
     {
-        $now = new \DateTime("now", new \DateTimeZone('UTC'));
+        $now = new \DateTime('now', new \DateTimeZone('UTC'));
         $timestamp = clone $this->timestamp;
 
         return $timestamp->add(new \DateInterval($this->validFor)) >= $now;
@@ -69,6 +71,6 @@ class Timestamp
      */
     public function __toString()
     {
-        return $this->timestamp->format('Ymd\TH:i:sO');
+        return $this->timestamp->format(static::FORMAT);
     }
 }

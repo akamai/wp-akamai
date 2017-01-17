@@ -1,3 +1,20 @@
+1.0.0beta1
+---
+[13 Jan, 2017]
+* Improved tests
+* Improved continuous integration, including Windows testing
+
+0.6.2
+---
+[24 Dec, 2016]
+* Add support for using environment variables for credentials 
+* General cleanup
+
+0.6.1
+---
+[17 Dec, 2016]
+* Fix PHP 7.1 compatibility (@remicollet)
+
 0.6.0
 ---
 [08 Oct, 2016]

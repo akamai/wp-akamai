@@ -37,5 +37,19 @@
        "platform": {
             "php": "5.3.6"
        }
+    },
+    "scripts": {
+        "build": [
+            "@test",
+            "@build-phar",
+            "@fix-cs"
+        ],
+        "test": "phpunit",
+        "build-phar": "./tools/build-phar.sh",
+        "fix-cs": [
+            "phpcbf --standard=PSR1,PSR2 ./src ./tests",
+            "php-cs-fixer fix --level=psr2 ./src",
+            "php-cs-fixer fix --level=psr2 ./tests"
+        ]
     }
 }

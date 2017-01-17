@@ -2,13 +2,10 @@
 /**
  * Akamai {OPEN} EdgeGrid Auth for PHP
  *
- * Provides Request Signing as per
- * {@see https://developer.akamai.com/introduction/Client_Auth.html}
- *
  * @author Davey Shafik <dshafik@akamai.com>
  * @copyright Copyright 2016 Akamai Technologies, Inc. All rights reserved.
  * @license Apache 2.0
- * @link https://github.com/akamai-open/edgegrid-auth-php
+ * @link https://github.com/akamai-open/AkamaiOPEN-edgegrid-php
  * @link https://developer.akamai.com
  * @link https://developer.akamai.com/introduction/Client_Auth.html
  */
@@ -73,8 +70,8 @@ class Authentication
 
     /**
      * Create the Authentication header
-     *
      * @return string
+     * @throws \Akamai\Open\EdgeGrid\Authentication\Exception\SignerException\InvalidSignDataException
      * @link https://developer.akamai.com/introduction/Client_Auth.html
      */
     public function createAuthHeader()
@@ -84,7 +81,7 @@ class Authentication
         }
 
         if (!$this->timestamp->isValid()) {
-            throw new InvalidSignDataException("Timestamp is invalid. Too old?");
+            throw new InvalidSignDataException('Timestamp is invalid. Too old?');
         }
 
         if ($this->nonce === null) {
@@ -109,7 +106,7 @@ class Authentication
      */
     public function setHttpMethod($method)
     {
-        $this->httpMethod = $method;
+        $this->httpMethod = strtoupper($method);
         return $this;
     }
 
@@ -229,7 +226,7 @@ class Authentication
      * Set request body
      *
      * @param string $body
-     * return $this;
+     * @return $this
      */
     public function setBody($body)
     {
@@ -240,11 +237,16 @@ class Authentication
     /**
      * Get request body
      *
+     * @param bool $truncate
      * @return string
      */
-    public function getBody()
+    public function getBody($truncate = false)
     {
-        return isset($this->config['body']) ? $this->config['body'] : '';
+        if (!$truncate) {
+            return isset($this->config['body']) ? $this->config['body'] : '';
+        }
+
+        return isset($this->config['body']) ? substr($this->config['body'], 0, $this->max_body_size) : '';
     }
 
     /**
@@ -266,7 +268,7 @@ class Authentication
      */
     public function getHeaders()
     {
-        return isset($this->config['header']) ? $this->config['header'] : array();
+        return isset($this->config['headers']) ? $this->config['headers'] : array();
     }
 
     /**
@@ -369,15 +371,101 @@ class Authentication
     }
 
     /**
+     * Create instance using environment (prefered) or .edgerc file (fallback)
+     * automatically.
+     *
+     * This method will check in order:
+     * - AKAMAI_{SECTION}_* environment variables
+     * - if using the "default" section, AKAMAI_* environment variables
+     * - the specified (or "default" if none) section in .edgerc
+     * - if not using the "default" section, AKAMAI_* environment variables
+     *
+     * @param string $section
+     * @param null $path
+     * @return Authentication
+     * @throws \Akamai\Open\EdgeGrid\Authentication\Exception\ConfigException
+     */
+    public static function createInstance($section = 'default', $path = null)
+    {
+        $previousError = null;
+
+        if (isset($_ENV['AKAMAI_' .strtoupper($section). '_HOST'])
+            || (isset($_ENV['AKAMAI_HOST']) && $section === 'default')) {
+            try {
+                return self::createFromEnv($section);
+            } catch (ConfigException $previousError) {
+            }
+        }
+
+        try {
+            return self::createFromEdgeRcFile($section, $path);
+        } catch (ConfigException $previousError) {
+            try {
+                if (isset($_ENV['AKAMAI_HOST']) && $section !== 'default') {
+                    return self::createFromEnv();
+                }
+            } catch (ConfigException $previousError) {
+                // fall through to the below throw
+            }
+        }
+
+        throw new ConfigException('Unable to create instance using environment or .edgerc file', 0, $previousError);
+    }
+
+    /**
+     * Create instance using environment variables
+     *
+     * @param string $section
+     * @return Authentication
+     * @throws \Akamai\Open\EdgeGrid\Authentication\Exception\ConfigException
+     */
+    public static function createFromEnv($section = 'default')
+    {
+        $section = strtoupper($section);
+
+        $prefix = isset($_ENV['AKAMAI_' . $section . '_HOST']) ? 'AKAMAI_' . $section . '_' : 'AKAMAI_';
+
+        $vars = array('HOST', 'CLIENT_TOKEN', 'CLIENT_SECRET', 'ACCESS_TOKEN');
+
+        foreach ($vars as $var) {
+            if (!isset($_ENV[$prefix . $var])) {
+                throw new ConfigException(sprintf(
+                    'Environment variable%s %sAKAMAI_%s_%s do%s not exist',
+                    $section === 'DEFAULT' ? 's' : '',
+                    $section === 'DEFAULT' ? 'AKAMAI_' . $var . ' or ' : '',
+                    $section,
+                    $var,
+                    $section === 'DEFAULT' ? '' : 'es'
+                ));
+            }
+        }
+
+        $auth = new static();
+        $auth->setAuth(
+            $_ENV[$prefix . 'CLIENT_TOKEN'],
+            $_ENV[$prefix . 'CLIENT_SECRET'],
+            $_ENV[$prefix . 'ACCESS_TOKEN']
+        );
+
+        $auth->setHost($_ENV[$prefix . 'HOST']);
+
+        if (isset($_ENV[$prefix . 'MAX_SIZE'])) {
+            $auth->setMaxBodySize($_ENV[$prefix . 'MAX_SIZE']);
+        }
+
+        return $auth;
+    }
+
+    /**
      * Create instance using an .edgerc configuration file
      *
      * @param string $section
      * @param string|null $path
      *
-     * @return static
-     * @throws ConfigException
+     * @return Authentication
+     * @throws \Akamai\Open\EdgeGrid\Authentication\Exception\ConfigException
      */
-    public static function createFromEdgeRcFile($section = "default", $path = null)
+    public static function createFromEdgeRcFile($section = 'default', $path = null)
     {
         if ($section === null) {
             $section = 'default';
@@ -418,7 +506,7 @@ class Authentication
         $headers = array();
         if (isset($this->config['headers'])) {
             $headers = array_map('strtolower', array_keys($this->config['headers']));
-            if (sizeof($this->config['headers']) > 0) {
+            if (count($this->config['headers']) > 0) {
                 $headers = array_combine(
                     $headers,
                     array_values($this->config['headers'])
@@ -429,9 +517,9 @@ class Authentication
         foreach ($this->headers_to_sign as $key) {
             $key = strtolower($key);
             if (isset($headers[$key])) {
-                if (is_array($headers[$key]) && sizeof($headers[$key]) >= 1) {
+                if (is_array($headers[$key]) && count($headers[$key]) >= 1) {
                     $value = trim($headers[$key][0]);
-                } elseif (is_array($headers[$key]) && sizeof($headers[$key]) == 0) {
+                } elseif (is_array($headers[$key]) && count($headers[$key]) === 0) {
                     continue;
                 } else {
                     $value = trim($headers[$key]);
@@ -461,8 +549,7 @@ class Authentication
      */
     protected function makeBase64HmacSha256($data, $key)
     {
-        $hash = base64_encode(hash_hmac('sha256', (string) $data, $key, true));
-        return $hash;
+        return base64_encode(hash_hmac('sha256', (string) $data, $key, true));
     }
 
     /**
@@ -473,8 +560,7 @@ class Authentication
      */
     protected function makeBase64Sha256($data)
     {
-        $hash = base64_encode(hash('sha256', (string) $data, true));
-        return $hash;
+        return base64_encode(hash('sha256', (string) $data, true));
     }
 
     /**
@@ -488,7 +574,7 @@ class Authentication
             return '';
         } else {
             // Just substr, it'll return as much as it can
-            return $this->makeBase64Sha256(substr($this->config['body'], 0, $this->max_body_size));
+            return $this->makeBase64Sha256($this->getBody(true));
         }
     }
 
@@ -516,7 +602,7 @@ class Authentication
             $this->host,
             $this->path . $query,
             $this->canonicalizeHeaders(),
-            (strtoupper($this->httpMethod) == 'POST') ? $this->makeContentHash() : '',
+            (strtoupper($this->httpMethod) === 'POST') ? $this->makeContentHash() : '',
             $auth_header
         );
 
@@ -530,8 +616,7 @@ class Authentication
      */
     protected function makeSigningKey()
     {
-        $key = self::makeBase64HmacSha256((string) ($this->timestamp), $this->auth['client_secret']);
-        return $key;
+        return $this->makeBase64HmacSha256((string)$this->timestamp, $this->auth['client_secret']);
     }
 
     /**
@@ -553,13 +638,13 @@ class Authentication
      *
      * @param $path
      * @return array
-     * @throws ConfigException
+     * @throws \Akamai\Open\EdgeGrid\Authentication\Exception\ConfigException
      */
     protected static function parseEdgeRcFile($path)
     {
         if ($path === null) {
             if (isset($_SERVER['HOME']) && file_exists($_SERVER['HOME'] . '/.edgerc')) {
-                $path = $_SERVER['HOME'] . "/.edgerc";
+                $path = $_SERVER['HOME'] . '/.edgerc';
             } elseif (file_exists('./.edgerc')) {
                 $path = './.edgerc';
             }
@@ -571,7 +656,7 @@ class Authentication
         }
 
         if (!is_readable($file)) {
-            throw new ConfigException("Unable to read .edgerc file!");
+            throw new ConfigException('Unable to read .edgerc file!');
         }
 
         // Handle : assignments in .edgerc files
@@ -588,11 +673,14 @@ class Authentication
      *
      * @return string
      */
-    protected function buildQueryString($query) {
-        if ( defined( 'PHP_QUERY_RFC3986' ) ) {
-            return http_build_query( $query, null, '&', PHP_QUERY_RFC3986 );
+    protected function buildQueryString($query)
+    {
+        if (defined('PHP_QUERY_RFC3986')) {
+            return http_build_query($query, null, '&', PHP_QUERY_RFC3986);
         }
 
-        return str_replace( '+', '%20', http_build_query($query, null, '&' ) );
+        // @codeCoverageIgnoreStart
+        return str_replace('+', '%20', http_build_query($query, null, '&'));
+        // @codeCoverageIgnoreEnd
     }
 }

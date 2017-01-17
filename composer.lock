@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "3ee87e4c30da651b18f0311ec03be7fd",
+    "content-hash": "2d89361d89ec7526aa2a003410420311",
     "packages": [
         {
             "name": "akamai-open/edgegrid-auth",
-            "version": "0.6.0",
+            "version": "1.0.0beta1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/akamai-open/AkamaiOPEN-edgegrid-php.git",
-                "reference": "1617cf4bdeba7b5c46a1d55bb969d0e45c7f52f5"
+                "reference": "9b6de17d90a18a67503f9d3951b066c8602aa41c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/akamai-open/AkamaiOPEN-edgegrid-php/zipball/1617cf4bdeba7b5c46a1d55bb969d0e45c7f52f5",
-                "reference": "1617cf4bdeba7b5c46a1d55bb969d0e45c7f52f5",
+                "url": "https://api.github.com/repos/akamai-open/AkamaiOPEN-edgegrid-php/zipball/9b6de17d90a18a67503f9d3951b066c8602aa41c",
+                "reference": "9b6de17d90a18a67503f9d3951b066c8602aa41c",
                 "shasum": ""
             },
             "require": {
@@ -56,7 +56,7 @@
                 "edgegrid",
                 "open"
             ],
-            "time": "2016-10-08T07:20:37+00:00"
+            "time": "2017-01-13T20:24:02+00:00"
         },
         {
             "name": "composer/installers",
@@ -169,7 +169,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "akamai-open/edgegrid-auth": 10
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
