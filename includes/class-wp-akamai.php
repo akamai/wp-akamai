@@ -211,6 +211,11 @@ class Wp_Akamai {
 		}
 	}
 
+	public function sendHeaders($WP)
+	{
+
+	}
+
 	/**
 	 * @param $options
 	 * @param $post
@@ -347,7 +352,7 @@ class Wp_Akamai {
 			<div class="error notice is-dismissible">
 				<p>
 					<img src="<?= Wp_Akamai_Admin::get_icon(); ?>" style="height: 1em" alt="Akamai for WordPress">
-					<?php esc_html_e( 'Unable to purge cache: ' . $_GET['akamai-cache-purge-error'], 'text-domain' ); ?>
+					<?php esc_html_e( 'Unable to purge cache: ' . $_GET['akamai-cache-purge-error'], 'akamai' ); ?>
 				</p>
 			</div>
 			<?php
