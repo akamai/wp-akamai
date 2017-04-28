@@ -2,18 +2,22 @@
 Contributors: dshafik
 Tags: akamai, cache, purge, cdn
 Requires at least: 4.3
-Tested up to: 4.6
+Tested up to: 4.7
 Stable tag: trunk
 License: Apache 2.0
 License URI: https://www.apache.org/licenses/LICENSE-2.0
 
-The Akamai for WordPress plugin integrates automatically with Akamai to purge the cache when you create or update a post.
+The Akamai for WordPress plugin integrates automatically with Akamai to purge the cache when you create or update a post/page.
 
 == Description ==
 
 The Akamai for WordPress plugin will automatically purge the cache using the new Fast Purge feature whenever you create or update a post.
 
 With the Fast Purge API, you can automate your publishing flow to maximize performance and offload without compromising on freshness. Switching to a Hold ‘Til Told methodology, you can cache semi-dynamic content with long TTLs, and then refresh it in approximately 5 seconds with Fast Purge.
+
+= Development & Support =
+
+This plugin is developed on [GitHub](https://github.com/akamai-open/wp-akamai). Issues should be filed [here](https://github.com/akamai-open/wp-akamai/issues).
 
 == Installation ==
 
@@ -47,6 +51,9 @@ In addition, there is a strictly enforced 50,000 byte limit on the size of each 
 1. Akamai for WordPress Settings screen
 
 == Changelog ==
+
+= 0.4 =
+* Rename plugin to "akamai"
 
 = 0.3 =
 * Add support for purging on comments
