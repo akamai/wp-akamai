@@ -1,3 +1,8 @@
+1.0.0beta2
+---
+[28 Apr, 2017]
+* Minor bug fix in test files
+
 1.0.0beta1
 ---
 [13 Jan, 2017]

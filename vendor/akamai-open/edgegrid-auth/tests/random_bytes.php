@@ -18,7 +18,9 @@
  * @param $size
  * @return string
  */
-function random_bytes($size)
-{
-    return __FUNCTION__;
+if (!function_exists("random_bytes")) {
+    function random_bytes($size)
+    {
+        return __FUNCTION__;
+    }
 }

@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "akamai-open/edgegrid-auth",
-            "version": "1.0.0beta1",
+            "version": "1.0.0beta2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/akamai-open/AkamaiOPEN-edgegrid-php.git",
-                "reference": "9b6de17d90a18a67503f9d3951b066c8602aa41c"
+                "reference": "67012f08b049838da67086e50db7b9368f5ae342"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/akamai-open/AkamaiOPEN-edgegrid-php/zipball/9b6de17d90a18a67503f9d3951b066c8602aa41c",
-                "reference": "9b6de17d90a18a67503f9d3951b066c8602aa41c",
+                "url": "https://api.github.com/repos/akamai-open/AkamaiOPEN-edgegrid-php/zipball/67012f08b049838da67086e50db7b9368f5ae342",
+                "reference": "67012f08b049838da67086e50db7b9368f5ae342",
                 "shasum": ""
             },
             "require": {
@@ -56,20 +56,20 @@
                 "edgegrid",
                 "open"
             ],
-            "time": "2017-01-13T20:24:02+00:00"
+            "time": "2017-04-28T19:27:43+00:00"
         },
         {
             "name": "composer/installers",
-            "version": "v1.2.0",
+            "version": "v1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/installers.git",
-                "reference": "d78064c68299743e0161004f2de3a0204e33b804"
+                "reference": "79ad876c7498c0bbfe7eed065b8651c93bfd6045"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/installers/zipball/d78064c68299743e0161004f2de3a0204e33b804",
-                "reference": "d78064c68299743e0161004f2de3a0204e33b804",
+                "url": "https://api.github.com/repos/composer/installers/zipball/79ad876c7498c0bbfe7eed065b8651c93bfd6045",
+                "reference": "79ad876c7498c0bbfe7eed065b8651c93bfd6045",
                 "shasum": ""
             },
             "require": {
@@ -111,12 +111,16 @@
             "keywords": [
                 "Craft",
                 "Dolibarr",
+                "Eliasis",
                 "Hurad",
                 "ImageCMS",
+                "Kanboard",
                 "MODX Evo",
                 "Mautic",
+                "Maya",
                 "OXID",
                 "Plentymarkets",
+                "Porto",
                 "RadPHP",
                 "SMF",
                 "Thelia",
@@ -139,9 +143,11 @@
                 "fuelphp",
                 "grav",
                 "installer",
+                "itop",
                 "joomla",
                 "kohana",
                 "laravel",
+                "lavalite",
                 "lithium",
                 "magento",
                 "mako",
@@ -156,6 +162,7 @@
                 "roundcube",
                 "shopware",
                 "silverstripe",
+                "sydes",
                 "symfony",
                 "typo3",
                 "wordpress",
@@ -163,7 +170,7 @@
                 "zend",
                 "zikula"
             ],
-            "time": "2016-08-13T20:53:52+00:00"
+            "time": "2017-04-24T06:37:16+00:00"
         }
     ],
     "packages-dev": [],
