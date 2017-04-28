@@ -31,7 +31,7 @@ class Akamai {
 	/**
 	 * Plugin Version Number
 	 */
-	const VERSION = '0.3.0';
+	const VERSION = '0.4.0';
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
