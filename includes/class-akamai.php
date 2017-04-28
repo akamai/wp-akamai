@@ -9,8 +9,8 @@
  * @link       https://developer.akamai.com
  * @since      0.1.0
  *
- * @package    Wp_Akamai
- * @subpackage Wp_Akamai/includes
+ * @package    Akamai
+ * @subpackage Akamai/includes
  */
 
 /**
@@ -23,11 +23,11 @@
  * version of the plugin.
  *
  * @since      0.1.0
- * @package    Wp_Akamai
- * @subpackage Wp_Akamai/includes
+ * @package    Akamai
+ * @subpackage Akamai/includes
  * @author     Davey Shafik <dshafik@akamai.com>
  */
-class Wp_Akamai {
+class Akamai {
 	/**
 	 * Plugin Version Number
 	 */
@@ -39,7 +39,7 @@ class Wp_Akamai {
 	 *
 	 * @since    0.1.0
 	 * @access   protected
-	 * @var      Wp_Akamai_Loader $loader Maintains and registers all hooks for the plugin.
+	 * @var      Akamai_Loader $loader Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
@@ -71,7 +71,7 @@ class Wp_Akamai {
 	 * @since    0.1.0
 	 */
 	public function __construct() {
-		$this->plugin_name = 'wp-akamai';
+		$this->plugin_name = 'akamai';
 
 		$this->load_dependencies();
 		$this->define_admin_hooks();
@@ -82,9 +82,9 @@ class Wp_Akamai {
 	 *
 	 * Include the following files that make up the plugin:
 	 *
-	 * - Wp_Akamai_Loader. Orchestrates the hooks of the plugin.
-	 * - Wp_Akamai_Admin. Defines all hooks for the admin area.
-	 * - Wp_Akamai_Public. Defines all hooks for the public side of the site.
+	 * - Akamai_Loader. Orchestrates the hooks of the plugin.
+	 * - Akamai_Admin. Defines all hooks for the admin area.
+	 * - Akamai_Public. Defines all hooks for the public side of the site.
 	 *
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
@@ -98,14 +98,14 @@ class Wp_Akamai {
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wp-akamai-loader.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-akamai-loader.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-wp-akamai-admin.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-akamai-admin.php';
 
-		$this->loader = new Wp_Akamai_Loader();
+		$this->loader = new Akamai_Loader();
 
 	}
 
@@ -117,7 +117,7 @@ class Wp_Akamai {
 	 * @access   private
 	 */
 	private function define_admin_hooks() {
-		$plugin_admin = new Wp_Akamai_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin = new Akamai_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
@@ -176,7 +176,7 @@ class Wp_Akamai {
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
 	 * @since     0.1.0
-	 * @return    Wp_Akamai_Loader    Orchestrates the hooks of the plugin.
+	 * @return    Akamai_Loader    Orchestrates the hooks of the plugin.
 	 */
 	public function get_loader() {
 		return $this->loader;
@@ -351,7 +351,7 @@ class Wp_Akamai {
 			?>
 			<div class="error notice is-dismissible">
 				<p>
-					<img src="<?= Wp_Akamai_Admin::get_icon(); ?>" style="height: 1em" alt="Akamai for WordPress">
+					<img src="<?= Akamai_Admin::get_icon(); ?>" style="height: 1em" alt="Akamai for WordPress">
 					<?php esc_html_e( 'Unable to purge cache: ' . $_GET['akamai-cache-purge-error'], 'akamai' ); ?>
 				</p>
 			</div>

@@ -17,7 +17,7 @@ With the Fast Purge API, you can automate your publishing flow to maximize perfo
 
 == Installation ==
 
-1. Upload `wp-akamai` to the `/wp-content/plugins/` directory
+1. Upload the plugin directory to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Edit the Settings to add credentials
 

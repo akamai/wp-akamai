@@ -6,8 +6,8 @@
  * @link       https://developer.akamai.com
  * @since      0.1.0
  *
- * @package    Wp_Akamai
- * @subpackage Wp_Akamai/includes
+ * @package    Akamai
+ * @subpackage Akamai/includes
  */
 
 /**
@@ -16,11 +16,11 @@
  * This class defines all code necessary to run during the plugin's activation.
  *
  * @since      0.1.0
- * @package    Wp_Akamai
- * @subpackage Wp_Akamai/includes
+ * @package    Akamai
+ * @subpackage Akamai/includes
  * @author     Davey Shafik <dshafik@akamai.com>
  */
-class Wp_Akamai_Activator {
+class Akamai_Activator {
 
 	/**
 	 * Short Description. (use period)
@@ -30,7 +30,7 @@ class Wp_Akamai_Activator {
 	 * @since    0.1.0
 	 */
 	public static function activate() {
-		add_option( 'wp-akamai-version', Wp_Akamai::VERSION );
+		add_option( 'akamai-version', Akamai::VERSION );
 	}
 
 }

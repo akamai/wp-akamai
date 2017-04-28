@@ -10,19 +10,19 @@
  *
  * @link              https://developer.akamai.com
  * @since             0.2.0
- * @package           Wp_Akamai
+ * @package           Akamai
  * @author            Davey Shafik <dshafik@akamai.com>
  *
  * @wordpress-plugin
  * Plugin Name:       Akamai for WordPress
- * Plugin URI:        http://github.com/akamai-open/wp-akamai
+ * Plugin URI:        http://github.com/akamai-open/akamai
  * Description:       Akamai for WordPress Plugin. Control Akamai CDN and more.
  * Version:           0.3.0
  * Author:            Akamai Technologies
  * Author URI:        https://developer.akamai.com
  * License:           Apache-2.0
  * License URI:       http://www.apache.org/licenses/LICENSE-2.0.txt
- * Text Domain:       wp-akamai
+ * Text Domain:       akamai
  */
 
 // If this file is called directly, abort.
@@ -30,14 +30,14 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'WP_AKAMAI_MIN_PHP', '5.3' );
+define( 'AKAMAI_MIN_PHP', '5.3' );
 
-if ( version_compare( phpversion(), WP_AKAMAI_MIN_PHP, '<' ) ) {
+if ( version_compare( phpversion(), AKAMAI_MIN_PHP, '<' ) ) {
 	add_action( 'admin_notices', function () {
 		echo '<div class="notice notice-error">' .
 		     __( 'Error: "Akamai for WordPress" requires a newer version of PHP to be running.', 'akamai' ) .
 		     '<br/>' . __( 'Minimal version of PHP required: ',
-				'akamai' ) . '<strong>' . WP_AKAMAI_MIN_PHP . '</strong>' .
+				'akamai' ) . '<strong>' . AKAMAI_MIN_PHP . '</strong>' .
 		     '<br/>' . __( 'Your server\'s PHP version: ', 'akamai' ) . '<strong>' . phpversion() . '</strong>' .
 		     '</div>';
 	} );
@@ -55,30 +55,30 @@ require_once 'vendor/akamai-open/edgegrid-auth/src/Authentication/Exception/Sign
 
 /**
  * The code that runs during plugin activation.
- * This action is documented in includes/class-wp-akamai-activator.php
+ * This action is documented in includes/class-akamai-activator.php
  */
-function activate_wp_akamai() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-wp-akamai-activator.php';
-	Wp_Akamai_Activator::activate();
+function activate_akamai() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-akamai-activator.php';
+	Akamai_Activator::activate();
 }
 
 /**
  * The code that runs during plugin deactivation.
- * This action is documented in includes/class-wp-akamai-deactivator.php
+ * This action is documented in includes/class-akamai-deactivator.php
  */
-function deactivate_wp_akamai() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-wp-akamai-deactivator.php';
-	Wp_Akamai_Deactivator::deactivate();
+function deactivate_akamai() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-akamai-deactivator.php';
+	Akamai_Deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_wp_akamai' );
-register_deactivation_hook( __FILE__, 'deactivate_wp_akamai' );
+register_activation_hook( __FILE__, 'activate_akamai');
+register_deactivation_hook( __FILE__, 'deactivate_akamai');
 
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path( __FILE__ ) . 'includes/class-wp-akamai.php';
+require plugin_dir_path( __FILE__ ) . 'includes/class-akamai.php';
 
 /**
  * Begins execution of the plugin.
@@ -89,11 +89,11 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-wp-akamai.php';
  *
  * @since    0.1.0
  */
-function run_wp_akamai() {
+function run_akamai() {
 
-	$plugin = new Wp_Akamai();
+	$plugin = new Akamai();
 	$plugin->run();
 
 }
 
-run_wp_akamai();
+run_akamai();

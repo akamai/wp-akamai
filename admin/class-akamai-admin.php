@@ -6,8 +6,8 @@
  * @link       https://developer.akamai.com
  * @since      0.1.0
  *
- * @package    Wp_Akamai
- * @subpackage Wp_Akamai/admin
+ * @package    Akamai
+ * @subpackage Akamai/admin
  */
 
 /**
@@ -16,11 +16,11 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    Wp_Akamai
- * @subpackage Wp_Akamai/admin
+ * @package    Akamai
+ * @subpackage Akamai/admin
  * @author     Davey Shafik <dshafik@akamai.com>
  */
-class Wp_Akamai_Admin {
+class Akamai_Admin {
 
 	/**
 	 * The ID of this plugin.
@@ -66,15 +66,15 @@ class Wp_Akamai_Admin {
 		 * This function is provided for demonstration purposes only.
 		 *
 		 * An instance of this class should be passed to the run() function
-		 * defined in Wp_Akamai_Loader as all of the hooks are defined
+		 * defined in Akamai_Loader as all of the hooks are defined
 		 * in that particular class.
 		 *
-		 * The Wp_Akamai_Loader will then create the relationship
+		 * The Akamai_Loader will then create the relationship
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/wp-akamai-admin.css', array(),
+		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/akamai-admin.css', array(),
 			$this->version, 'all' );
 
 	}
@@ -90,15 +90,15 @@ class Wp_Akamai_Admin {
 		 * This function is provided for demonstration purposes only.
 		 *
 		 * An instance of this class should be passed to the run() function
-		 * defined in Wp_Akamai_Loader as all of the hooks are defined
+		 * defined in Akamai_Loader as all of the hooks are defined
 		 * in that particular class.
 		 *
-		 * The Wp_Akamai_Loader will then create the relationship
+		 * The Akamai_Loader will then create the relationship
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wp-akamai-admin.js', array( 'jquery' ),
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/akamai-admin.js', array( 'jquery' ),
 			$this->version, false );
 
 	}
@@ -173,7 +173,7 @@ class Wp_Akamai_Admin {
 	 */
 
 	public function display_plugin_setup_page() {
-		include_once( 'partials/wp-akamai-admin-display.php' );
+		include_once( 'partials/akamai-admin-display.php' );
 	}
 
 	public function options_update() {
@@ -187,7 +187,7 @@ class Wp_Akamai_Admin {
 			$auth = \Akamai\Open\EdgeGrid\Authentication::createFromEdgeRcFile( $valid['section'], $valid['edgerc'] );
 
 			echo json_encode( array( "success" => true ) );
-		} catch ( \Akamai\Open\EdgeGrid\Exception\ConfigException $e ) {
+		} catch ( \Akamai\Open\EdgeGrid\Authentication\Exception\ConfigException $e ) {
 			echo json_encode( array( "error" => $e->getMessage() ) );
 		}
 
@@ -206,7 +206,7 @@ class Wp_Akamai_Admin {
 			'purge_archives'   => 1,
 		);
 
-		$akamai = new Wp_Akamai();
+		$akamai = new Akamai();
 		$hostname = $akamai->get_hostname($input);
 		if (!empty($hostname)) {
 			$valid['hostname'] = $hostname;

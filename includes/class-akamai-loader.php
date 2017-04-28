@@ -6,7 +6,7 @@
  * @link       https://developer.akamai.com
  * @since      0.1.0
  *
- * @package    Wp_Akamai
+ * @package    Akamai
  */
 
 /**
@@ -16,11 +16,11 @@
  * the plugin, and register them with the WordPress API. Call the
  * run function to execute the list of actions and filters.
  *
- * @package    Wp_Akamai
- * @subpackage Wp_Akamai/includes
+ * @package    Akamai
+ * @subpackage Akamai/includes
  * @author     Davey Shafik <dshafik@akamai.com>
  */
-class Wp_Akamai_Loader {
+class Akamai_Loader {
 
 	/**
 	 * The array of actions registered with WordPress.

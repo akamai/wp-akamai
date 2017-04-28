@@ -68,7 +68,7 @@ $options = get_option( $this->plugin_name );
 							</label>
 						</th>
 						<td>
-							<?php $akamai = new Wp_Akamai(); ?>
+							<?php $akamai = new Akamai(); ?>
 							<input type="text" id="<?php echo $this->plugin_name; ?>-hostname"
 							       name="<?php echo $this->plugin_name; ?>[hostname]"
 							       value="<?php echo $akamai->get_hostname($options); ?>"/>

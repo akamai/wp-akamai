@@ -35,8 +35,8 @@
 
 			var data = {
 				'action': 'akamai_verify_credentials',
-				'edgerc': $('#wp-akamai-edgerc').val(),
-				'section': $('#wp-akamai-section').val()
+				'edgerc': $('#akamai-edgerc').val(),
+				'section': $('#akamai-section').val()
 			};
 
 			// We can also pass the url value separately from ajaxurl for front end AJAX implementations
