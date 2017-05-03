@@ -52,6 +52,9 @@ In addition, there is a strictly enforced 50,000 byte limit on the size of each 
 
 == Changelog ==
 
+= 0.5 =
+* Fix banner image
+
 = 0.4 =
 * Rename plugin to "akamai"
 
