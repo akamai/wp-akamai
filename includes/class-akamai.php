@@ -137,7 +137,7 @@ class Akamai {
 
 		// Purging Actions/Hooks
 		$this->loader->add_action( 'save_post', $this, 'purgeOnPost' );
-		$this->loader->add_action( 'comment_post', $this, 'purgeOnPost', 10, 3 );
+		$this->loader->add_action( 'comment_post', $this, 'purgeOnComment', 10, 3 );
 		$this->loader->add_action( 'admin_notices', $this, 'admin_notices' );
 		$this->loader->add_action( 'send_headers', $this, 'sendHeaders' );
 	}
