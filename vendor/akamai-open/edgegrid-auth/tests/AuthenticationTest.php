@@ -57,6 +57,41 @@ class AuthenticationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $result);
     }
 
+    public function testCreateAuthHeaderTrailingSpaces() {
+        $mockTimestamp = $this->prophesize('\Akamai\Open\EdgeGrid\Authentication\Timestamp');
+        $mockTimestamp->__toString()->willReturn("20170831T19:34:21+0000");
+        $mockTimestamp->isValid()->willReturn(true);
+        $mockNonce = $this->prophesize('\Akamai\Open\EdgeGrid\Authentication\Nonce');
+        $mockNonce->__toString()->willReturn("nonce-xx-xxxx-xxxx-xxxx-xxxxxxxxxxxx");
+
+        $authentication = new \Akamai\Open\EdgeGrid\Authentication();
+        $authentication->setHttpMethod("POST");
+        $authentication->setPath("/ccu/v3/invalidate/url/production");
+        $authentication->setHost("akaa-baseurl-xxxxxxxxxxx-xxxxxxxxxxxxx.luna.akamaiapis.net");
+        $authentication->setBody("{\"objects\":[\"https:\/\/example.org\/\",\"https:\/\/example.org\/test.html\"]}");
+        $authentication->setTimestamp($mockTimestamp->reveal());
+        $authentication->setNonce($mockNonce->reveal());
+
+        $authentication->setAuth(
+            'akab-client-token-xxx-xxxxxxxxxxxxxxxx',
+            'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx=',
+            'akab-access-token-xxx-xxxxxxxxxxxxxxxx'
+        );
+        $authentication->setMaxBodySize("15");
+        $noSpacesResult = $authentication->createAuthHeader();
+
+
+        $authentication->setAuth(
+            'akab-client-token-xxx-xxxxxxxxxxxxxxxx ',
+            ' xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx= ',
+            ' akab-access-token-xxx-xxxxxxxxxxxxxxxx'
+        );
+        $authentication->setMaxBodySize(" 15 ");
+        $spacesResult = $authentication->createAuthHeader();
+
+        $this->assertEquals($noSpacesResult, $spacesResult);
+    }
+
     public function testDefaultTimestamp()
     {
         $authentication = new \Akamai\Open\EdgeGrid\Authentication();

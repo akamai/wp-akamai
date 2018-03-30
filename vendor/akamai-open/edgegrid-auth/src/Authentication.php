@@ -305,7 +305,7 @@ class Authentication
     /**
      * Set signing timestamp
      *
-     * @param mixed $timestamp
+     * @param Timestamp|string $timestamp
      * @return $this
      */
     public function setTimestamp($timestamp = null)
@@ -320,7 +320,7 @@ class Authentication
     /**
      * Set signing nonce
      *
-     * @param Nonce $nonce
+     * @param Nonce|string $nonce
      * @return $this
      */
     public function setNonce($nonce = null)
@@ -352,7 +352,7 @@ class Authentication
      */
     public function setMaxBodySize($max_body_size)
     {
-        $this->max_body_size = $max_body_size;
+        $this->max_body_size = trim($max_body_size);
         return $this;
     }
 
@@ -366,7 +366,11 @@ class Authentication
      */
     public function setAuth($client_token, $client_secret, $access_token)
     {
-        $this->auth = compact('client_token', 'client_secret', 'access_token');
+        $this->auth = array(
+            'client_token' => trim($client_token),
+            'client_secret' => trim($client_secret),
+            'access_token' => trim($access_token),
+        );
         return $this;
     }
 

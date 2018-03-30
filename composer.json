@@ -11,6 +11,6 @@
     ],
     "require": {
         "composer/installers": "^1.0",
-        "akamai-open/edgegrid-auth": "^1.0.0@beta"
+        "akamai-open/edgegrid-auth": "^1.0.0"
     }
 }
