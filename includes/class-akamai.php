@@ -305,12 +305,16 @@ class Akamai {
 	 * @return \Akamai\Open\EdgeGrid\Authentication
 	 */
 	protected function get_purge_auth( $options, $body ) {
-		$auth = \Akamai\Open\EdgeGrid\Authentication::createFromEdgeRcFile( $options['section'], $options['edgerc'] );
-		$auth->setHttpMethod( 'POST' );
-		$auth->setPath( '/ccu/v3/invalidate/url' );
-		$auth->setBody( $body );
+	    try {
+		    $auth = \Akamai\Open\EdgeGrid\Authentication::createFromEdgeRcFile( $options['section'], $options['edgerc'] );
+		    $auth->setHttpMethod( 'POST' );
+		    $auth->setPath( '/ccu/v3/invalidate/url' );
+		    $auth->setBody( $body );
 
-		return $auth;
+		    return $auth;
+	    } catch (\Exception $e) {
+	        return false;
+        }
 	}
 
 	/**
@@ -367,6 +371,10 @@ class Akamai {
 	{
 		$body = $this->get_purge_body($options, $post);
 		$auth = $this->get_purge_auth($options, $body);
+
+		if (!($auth instanceof \Akamai\Open\EdgeGrid\Authentication)) {
+		    return;
+		}
 
 		$response = wp_remote_post('https://' . $auth->getHost() . $auth->getPath(), array(
 			'user-agent' => $this->get_user_agent(),
