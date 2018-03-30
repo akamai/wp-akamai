@@ -15,9 +15,9 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Akamai for WordPress
- * Plugin URI:        http://github.com/akamai-open/akamai
+ * Plugin URI:        http://github.com/akamai/wp-akamai
  * Description:       Akamai for WordPress Plugin. Control Akamai CDN and more.
- * Version:           0.5.0
+ * Version:           0.6.0
  * Author:            Akamai Technologies
  * Author URI:        https://developer.akamai.com
  * License:           Apache-2.0
