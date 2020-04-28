@@ -200,22 +200,6 @@ class Akamai {
 		$this->purge($options, $post);
 	}
 
-	public function purgeOnComment($comment_ID, $comment_approved, $comment_data) {
-		if ($comment_approved == 1) {
-			$options = get_option( $this->plugin_name );
-
-			if ( $options['purge_comments'] ) {
-				$post = get_post($comment_data['comment_post_ID']);
-				$this->purge($options, $post);
-			}
-		}
-	}
-
-	public function sendHeaders($WP)
-	{
-
-	}
-
 	/**
 	 * @param $options
 	 * @param $post
