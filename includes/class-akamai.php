@@ -117,7 +117,7 @@ class Akamai {
 	 * @access   private
 	 */
 	private function define_admin_hooks() {
-		$plugin_admin = new Akamai_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin = new Akamai_Admin( $this->get_plugin_name(), $this->get_version(), $this );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
@@ -129,17 +129,17 @@ class Akamai {
 		$plugin_basename = plugin_basename( plugin_dir_path( __DIR__ ) . $this->plugin_name . '.php' );
 		$this->loader->add_filter( 'plugin_action_links_' . $plugin_basename, $plugin_admin, 'add_action_links' );
 
-		// Save/Update our plugin options
+		// Save/update plugin options; load error messages on settings page.
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'options_update' );
+		$this->loader->add_action( "load-{$plugin_admin->menu_page_id}", $plugin_admin, 'options_load' );
 
 		// Validate Credentials AJAX
-		$this->loader->add_action( 'wp_ajax_akamai_verify_credentials', $plugin_admin, 'verify_credentials' );
+		$this->loader->add_action( 'wp_ajax_akamai_verify_credentials', $plugin_admin, 'handle_verify_credentials_request' );
 
 		// Purging Actions/Hooks
 		$this->loader->add_action( 'save_post', $this, 'purgeOnPost' );
 		$this->loader->add_action( 'comment_post', $this, 'purgeOnPost', 10, 3 );
 		$this->loader->add_action( 'admin_notices', $this, 'admin_notices' );
-		$this->loader->add_action( 'send_headers', $this, 'sendHeaders' );
 	}
 
 	/**
@@ -180,6 +180,80 @@ class Akamai {
 	 */
 	public function get_loader() {
 		return $this->loader;
+	}
+
+	/**
+	 * A helper to extract plugin option settings.
+	 *
+	 * @since	0.7.0
+	 * @param	string	$option_name The setting name.
+	 * @return	mixed	The setting value, or default if not set.
+	 */
+	public function get_opt( $option_name ) {
+		$options = get_option( $this->plugin_name );
+		return isset( $options[$option_name] )
+			? $options[$option_name]
+			: Akamai_Admin::$default_options[$option_name];
+	}
+
+	/**
+	 * A helper to extract plugin credential settings.
+	 *
+	 * @since	0.7.0
+	 * @param	string	$credential_name The setting name.
+	 * @return	mixed	The setting value, or default if not set.
+	 */
+	public function get_cred( $credential_name ) {
+		$options = get_option( $this->plugin_name );
+		$options['credentials'] = isset( $options['credentials'] )
+			? $options['credentials']
+			: [];
+		return isset( $options['credentials'][$credential_name] )
+			? $options['credentials'][$credential_name]
+			: Akamai_Admin::$default_credentials[$credential_name];
+	}
+
+	/**
+	 * A helper to extract plugin setting for debug-mode.
+	 *
+	 * @since	0.7.0
+	 * @return	bool	If debug-mode enabled.
+	 */
+	public function debug_mode( $incoming_settings = null ) {
+		$debug_mode = false;
+		if ( ! empty( $incoming_settings ) && is_array( $incoming_settings ) ) {
+			$debug_mode = (bool) $incoming_settings['debug-mode'];
+		} else {
+			$debug_mode = (bool) $this->get_opt( 'debug-mode' );
+		}
+		return $debug_mode;
+	}
+
+	/**
+	 * Handle generating an EdgeGrid auth client based on specific credentials,
+	 * without having to set env vars or upload an .edgerc file. It's a bit of a
+	 * hack, but the auth class does not provide a more direct way initializing
+	 * other than to load the .edgerc file.
+	 *
+	 * @since	0.7.0
+	 * @param	array	$credentials Optional. An array of credentials to use
+	 *                  when generating the auth client. Defaults to [].
+	 * @return	Akamai_Auth
+	 */
+	public function get_edge_auth_client( $credentials = [] ) {
+		$_ENV['AKAMAI_DEFAULT_HOST'] = isset( $credentials['host'] )
+			? $credentials['host']
+			: $this->get_cred( 'host' );
+		$_ENV['AKAMAI_DEFAULT_ACCESS_TOKEN'] = isset( $credentials['access-token'] )
+			? $credentials['access-token']
+			: $this->get_cred( 'access-token' );
+		$_ENV['AKAMAI_DEFAULT_CLIENT_TOKEN'] = isset( $credentials['client-token'] )
+			? $credentials['client-token']
+			: $this->get_cred( 'client-token' );
+		$_ENV['AKAMAI_DEFAULT_CLIENT_SECRET'] = isset( $credentials['client-secret'] )
+			? $credentials['client-secret']
+			: $this->get_cred( 'client-secret' );
+		return Akamai_Auth::createFromEnv();
 	}
 
 	/**
