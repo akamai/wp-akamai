@@ -1,5 +1,8 @@
 <?php
 
+
+use \Akamai\Open\EdgeGrid\Authentication as Akamai_Auth;
+
 /**
  * The file that defines the core plugin class
  *
@@ -360,19 +363,19 @@ class Akamai {
 	 * @param array $options
 	 * @param string $body
 	 *
-	 * @return \Akamai\Open\EdgeGrid\Authentication
+	 * @return Akamai_Auth
 	 */
 	protected function get_purge_auth( $options, $body ) {
-	    try {
-		    $auth = \Akamai\Open\EdgeGrid\Authentication::createFromEdgeRcFile( $options['section'], $options['edgerc'] );
-		    $auth->setHttpMethod( 'POST' );
-		    $auth->setPath( '/ccu/v3/invalidate/url' );
-		    $auth->setBody( $body );
+		try {
+			$auth = $this->get_edge_auth_client( $options['credentials'] );
+			$auth->setHttpMethod( 'POST' );
+			$auth->setPath( '/ccu/v3/invalidate/url' );
+			$auth->setBody( $body );
 
-		    return $auth;
-	    } catch (\Exception $e) {
-	        return false;
-        }
+			return $auth;
+		} catch (\Exception $e) {
+			return false;
+		}
 	}
 
 	/**
@@ -430,8 +433,8 @@ class Akamai {
 		$body = $this->get_purge_body($options, $post);
 		$auth = $this->get_purge_auth($options, $body);
 
-		if (!($auth instanceof \Akamai\Open\EdgeGrid\Authentication)) {
-		    return;
+		if (!($auth instanceof Akamai_Auth)) {
+			return;
 		}
 
 		$response = wp_remote_post('https://' . $auth->getHost() . $auth->getPath(), array(
