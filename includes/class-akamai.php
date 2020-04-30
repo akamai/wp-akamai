@@ -1,10 +1,7 @@
 <?php
 
-
-use \Akamai\Open\EdgeGrid\Authentication as Akamai_Auth;
-
 /**
- * The file that defines the core plugin class
+ * The file that defines the core plugin class.
  *
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
@@ -15,6 +12,8 @@ use \Akamai\Open\EdgeGrid\Authentication as Akamai_Auth;
  * @package    Akamai
  * @subpackage Akamai/includes
  */
+
+use \Akamai\Open\EdgeGrid\Authentication as Akamai_Auth;
 
 /**
  * The core plugin class.
@@ -85,9 +84,10 @@ class Akamai {
 	 *
 	 * Include the following files that make up the plugin:
 	 *
-	 * - Akamai_Loader. Orchestrates the hooks of the plugin.
-	 * - Akamai_Admin. Defines all hooks for the admin area.
-	 * - Akamai_Public. Defines all hooks for the public side of the site.
+	 * - Akamai_Loader:         orchestrates the hooks of the plugin.
+	 * - Akamai_Admin:          defines all hooks for the admin area.
+	 * - Akamai_Purge:          handles purging behavior.
+	 * - Akamai_Purge_Request:  dispatches and actual purge request.
 	 *
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
@@ -96,20 +96,13 @@ class Akamai {
 	 * @access   private
 	 */
 	private function load_dependencies() {
-
-		/**
-		 * The class responsible for orchestrating the actions and filters of the
-		 * core plugin.
-		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-akamai-loader.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the admin area.
-		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-akamai-purge.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-akamai-purge-request.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-akamai-cache-tags.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-akamai-admin.php';
 
 		$this->loader = new Akamai_Loader();
-
 	}
 
 	/**
@@ -120,29 +113,26 @@ class Akamai {
 	 * @access   private
 	 */
 	private function define_admin_hooks() {
+		// Add Settings link to the plugin
 		$plugin_admin = new Akamai_Admin( $this->get_plugin_name(), $this->get_version(), $this );
-
+		$plugin_basename = plugin_basename( plugin_dir_path( __DIR__ ) . $this->plugin_name . '.php' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_plugin_admin_menu' );
-
-
-		// Add Settings link to the plugin
-		$plugin_basename = plugin_basename( plugin_dir_path( __DIR__ ) . $this->plugin_name . '.php' );
 		$this->loader->add_filter( 'plugin_action_links_' . $plugin_basename, $plugin_admin, 'add_action_links' );
 
 		// Save/update plugin options; load error messages on settings page.
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'options_update' );
 		$this->loader->add_action( "load-{$plugin_admin->menu_page_id}", $plugin_admin, 'options_load' );
 
-		// Validate Credentials AJAX
+		// Validate Credentials AJAX.
 		$this->loader->add_action( 'wp_ajax_akamai_verify_credentials', $plugin_admin, 'handle_verify_credentials_request' );
 
-		// Purging Actions/Hooks
-		$this->loader->add_action( 'save_post', $this, 'purgeOnPost' );
-		$this->loader->add_action( 'comment_post', $this, 'purgeOnPost', 10, 3 );
-		$this->loader->add_action( 'admin_notices', $this, 'admin_notices' );
+		// Purging Actions/Hooks.
+		$plugin_purge = Akamai_Purge::instance( $this );
+		$this->loader->add_action( 'admin_notices', $plugin_purge, 'display_purge_notices' );
+		// $this->loader->add_action( 'save_post', $this, 'purgeOnPost' );
+		// $this->loader->add_action( 'comment_post', $this, 'purgeOnPost', 10, 3 );
 	}
 
 	/**
@@ -260,92 +250,6 @@ class Akamai {
 	}
 
 	/**
-	 * @param $post_ID
-	 *
-	 * @return bool
-	 */
-	public function purgeOnPost($post_ID ) {
-		$post = get_post( $post_ID );
-		if ( ! is_object( $post ) || $post->post_status != 'publish' ) {
-			return true;
-		}
-
-		$options = get_option( $this->plugin_name );
-
-		$options['purge_front'] = true;
-
-		$this->purge($options, $post);
-	}
-
-	/**
-	 * @param $options
-	 * @param $post
-	 *
-	 * @return mixed|string|void
-	 */
-	protected function get_purge_body( $options, $post ) {
-		$baseUrl   = parse_url( get_bloginfo( 'wpurl' ), PHP_URL_PATH ) . '/';
-		$permalink = get_permalink( $post->ID );
-
-		$objects = array(
-			$this->get_item_url( $permalink ), // Post
-		);
-
-		if ( $options['purge_front'] ) {
-			$objects[] = $baseUrl;
-		}
-
-		$host = $this->get_hostname($options);
-
-		if ( $options['purge_tags'] ) {
-			$tags = get_the_tags( $post->ID );
-			if ( $tags !== false && ! ( $tags instanceof WP_Error ) ) {
-				foreach ( $tags as $tag ) {
-					$objects[] = $this->get_item_url( get_tag_link( $tag ) );
-				}
-			}
-		}
-
-		if ( $options['purge_categories'] ) {
-			$categories = get_the_category( $post->ID );
-			if ( $categories !== false && ! ( $categories instanceof WP_Error ) ) {
-				foreach ( $categories as $category ) {
-					$url       = $this->get_item_url( get_category_link( $category ) );
-					$objects[] = $url;
-				}
-			}
-		}
-
-		if ( $options['purge_archives'] ) {
-			$archive = get_month_link( get_post_time( 'Y', false, $post ), get_post_time( 'm', false, $post ) );
-			if ( $archive !== false && ! ( $archive instanceof WP_Error ) ) {
-				$objects[] = $this->get_item_url( $archive );
-			}
-		}
-
-		$data = array(
-			'hostname' => $host,
-			'objects'  => $objects
-		);
-
-		return json_encode( $data );
-	}
-
-	/**
-	 * @param $url
-	 *
-	 * @return mixed|string
-	 */
-	protected function get_item_url( $url ) {
-		$itemUrl = parse_url( $url, PHP_URL_PATH );
-		if ( strpos( $url, '?' ) !== false ) {
-			$itemUrl .= '?' . parse_url( $url, PHP_URL_QUERY );
-		}
-
-		return $itemUrl;
-	}
-
-	/**
 	 * @return string
 	 */
 	public function get_hostname($options) {
@@ -357,104 +261,5 @@ class Akamai {
 		$host  = $wpurl['host'];
 
 		return $host;
-	}
-
-	/**
-	 * @param array $options
-	 * @param string $body
-	 *
-	 * @return Akamai_Auth
-	 */
-	protected function get_purge_auth( $options, $body ) {
-		try {
-			$auth = $this->get_edge_auth_client( $options['credentials'] );
-			$auth->setHttpMethod( 'POST' );
-			$auth->setPath( '/ccu/v3/invalidate/url' );
-			$auth->setBody( $body );
-
-			return $auth;
-		} catch (\Exception $e) {
-			return false;
-		}
-	}
-
-	/**
-	 * @return string
-	 */
-	protected function get_user_agent() {
-		return
-			'WordPress/' . get_bloginfo( 'version' ) . ' ' .
-			'Akamai-for-WordPress/' . self::VERSION . ' ' .
-			'PHP/' . phpversion();
-	}
-
-	/**
-	 * @param $location
-	 * @param $response
-	 *
-	 * @return string
-	 */
-	public function add_error_query_arg( $location, $response ) {
-		remove_filter( 'redirect_post_location', array( $this, 'add_error_query_arg' ), 100 );
-
-		return add_query_arg( array( 'akamai-cache-purge-error' => urlencode( $response->detail ) ), $location );
-	}
-
-	/**
-	 * @param $location
-	 *
-	 * @return string
-	 */
-	public function add_success_query_arg( $location ) {
-		remove_filter( 'redirect_post_location', array( $this, 'add_success_query_arg' ), 100 );
-
-		return add_query_arg( array( 'akamai-cache-purge-success' => 'true' ), $location );
-	}
-
-	public function admin_notices() {
-		if ( isset( $_GET['akamai-cache-purge-error'] ) ) {
-			?>
-			<div class="error notice is-dismissible">
-				<p>
-					<img src="<?= Akamai_Admin::get_icon(); ?>" style="height: 1em" alt="Akamai for WordPress">
-					<?php esc_html_e( 'Unable to purge cache: ' . $_GET['akamai-cache-purge-error'], 'akamai' ); ?>
-				</p>
-			</div>
-			<?php
-		}
-	}
-
-	/**
-	 * @param $options
-	 * @param $post
-	 */
-	protected function purge($options, $post)
-	{
-		$body = $this->get_purge_body($options, $post);
-		$auth = $this->get_purge_auth($options, $body);
-
-		if (!($auth instanceof Akamai_Auth)) {
-			return;
-		}
-
-		$response = wp_remote_post('https://' . $auth->getHost() . $auth->getPath(), array(
-			'user-agent' => $this->get_user_agent(),
-			'headers' => array(
-				'Authorization' => $auth->createAuthHeader(),
-				'Content-Type' => 'application/json',
-			),
-			'body' => $body
-		));
-
-		if (wp_remote_retrieve_response_code($response) != 201) {
-			$instance = $this;
-			add_filter('redirect_post_location', function ($location) use ($instance, $response) {
-				$body = json_decode(wp_remote_retrieve_body($response));
-
-				return $instance->add_error_query_arg($location, $body);
-			}, 100);
-		} else {
-			add_filter('redirect_post_location', array($this, 'add_success_query_arg'), 100);
-		}
 	}
 }
