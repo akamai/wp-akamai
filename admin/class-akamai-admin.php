@@ -342,7 +342,7 @@ class Akamai_Admin {
 				? $input['credentials'][$key]
 				: $default_cred;
 		}
-		$values = apply_filters( 'ak_settings_to_validate', $values );
+		$values = apply_filters( 'akamai_settings_to_validate', $values );
 
 		$debug_mode = $this->akamai->debug_mode( $values );
 
