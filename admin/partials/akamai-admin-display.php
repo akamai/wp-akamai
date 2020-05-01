@@ -14,6 +14,7 @@ $options = get_option( $this->plugin_name );
 		<div id="akamai-wrapper" class="wrap">
 			<form method="post" name="cleanup_options" action="options.php" autocomplete="off">
 				<h1><span><?php esc_attr_e( 'API Credentials', 'wp_admin_style' ); ?></span></h1>
+				<div id="verification-notices-drawer"></div>
 				<p>The below credentials can be retrieved either directly from the Akamai Identity and Access
 				Management (IAM) settings console, or from the <code>.edgerc</code> files it generates. When entering
 				fields from an <code>.edgerc</code> file, be sure to use the information in the section of the file

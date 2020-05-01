@@ -48,7 +48,7 @@
             });
         },
         noticeFadeOut: function() {
-            $(this).fadeOut('normal', function () {
+            $(this).fadeOut('fast', function () {
                 $(this).remove();
             });
         },
@@ -72,7 +72,7 @@
         const $msg = $('<p>').text(message);
 
         $btn.click(function() {
-            $(this).noticeFadeOut();
+            $div.noticeFadeOut();
         });
 
         return $div.prepend($msg).append($btn);
@@ -83,7 +83,7 @@
             if ('success' === type && this.successes.length > 1) {
                 this.successes.shift().noticeSlideOut();
             }
-            $('#akamai-creds-form-table').before(this.drawer[id]);
+            $('#verification-notices-drawer').append(this.drawer[id]);
             this.drawer[id].noticeShow();
         }
     });
@@ -109,7 +109,7 @@
                 },
             })
             .done(function(response) {
-                console.log({ response });
+                console.log({verification: { response }});
 
                 setVerifyButtonDisabled(false);
                 $('#verify-creds-spinner').css({ visibility: 'hidden' });
@@ -135,7 +135,7 @@
                 }
             })
             .fail(function(error) {
-                console.log({ error });
+                console.log({verification: { error }});
 
                 setVerifyButtonDisabled(false);
                 $('#verify-creds-spinner').hide();
