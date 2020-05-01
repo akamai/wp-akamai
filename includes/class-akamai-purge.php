@@ -92,7 +92,7 @@ class Akamai_Purge {
      */
     public function purge_post( $post_id, $action ) {
         // Only run once per request.
-        if ( did_action( 'akamai_to_purge' ) ) {
+        if ( did_action( 'akamai_to_purge_post' ) ) {
             return;
         }
         $purge_post_statuses = apply_filters(
@@ -121,6 +121,7 @@ class Akamai_Purge {
         }
 
         do_action( 'akamai_to_purge', ...$purge_params );
+        do_action( 'akamai_to_purge_post', ...$purge_params );
         $client = new Akamai_Purge_Request(
             $this->plugin->get_edge_auth_client(),
             $this->plugin->get_user_agent()
@@ -129,7 +130,7 @@ class Akamai_Purge {
             $options = $settings,
             $objects = $cache_tags
         );
-        do_action( 'akamai_purged', $response, ...$purge_params );
+        do_action( 'akamai_purged_post', $response, ...$purge_params );
 
         if ( $response['error'] ) {
             add_filter(
