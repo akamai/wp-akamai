@@ -66,32 +66,32 @@ class Akamai_Cache_Tags {
      * Instantiate or return the one Akamai_Cache_Tags instance.
      *
      * @since  0.7.0
-     * @param  string $akamai The Akamai class instance.
+     * @param  string $plugin The Akamai Plugin class instance.
      * @return Akamai_Cache_Tags
      */
-    public static function instance( $akamai ) {
+    public static function instance( $plugin ) {
         if ( is_null( self::$instance ) ) {
-            self::$instance = new self( $akamai );
+            self::$instance = new self( $plugin );
         }
         return self::$instance;
     }
 
     /**
-     * A reference to the Akamai class instance.
+     * A reference to the Akamai Plugin class instance.
      *
      * @since 0.7.0
-     * @var   string $akamai The Akamai class instance.
+     * @var   string $plugin The Akamai Plugin class instance.
      */
-    public $akamai;
+    public $plugin;
 
     /**
      * ...
      *
      * @since 0.7.0
-     * @param string $akamai The Akamai class instance.
+     * @param string $plugin The Akamai class instance.
      */
-    public function __construct( $akamai ) {
-        $this->akamai = $akamai;
+    public function __construct( $plugin ) {
+        $this->plugin = $plugin;
     }
 
     /**
@@ -114,9 +114,9 @@ class Akamai_Cache_Tags {
      * @return string The current unique site code.
      */
     public function get_site_code() {
-        $site_code = $this->akamai->get_opt( 'unique-sitecode' );
+        $site_code = $this->plugin->setting( 'unique-sitecode' );
         if ( $site_code === '' ) {
-            return urlencode( $this->akamai->get_hostname() );
+            return urlencode( $this->plugin->get_hostname() );
         }
         return $site_code;
     }

@@ -27,20 +27,12 @@ class Akamai_Purge {
      */
     private static $instance;
 
-	/**
-	 * A reference to the Akamai class instance.
-	 *
-	 * @since 0.7.0
-	 * @var   string $akamai The Akamai class instance.
-	 */
-	public $akamai;
-
     /**
      * Instantiate or return the one Akamai_Purge instance.
      *
      * @since  0.7.0
-     * @param  string $akamai The Akamai class instance.
-     * @return Akamai_Purge
+     * @param  string       $akamai The Akamai class instance.
+     * @return Akamai_Purge The created instance.
      */
     public static function instance( $akamai ) {
         if ( is_null( self::$instance ) ) {
@@ -49,15 +41,24 @@ class Akamai_Purge {
         return self::$instance;
     }
 
+	/**
+	 * A reference to the Akamai Plugin class instance.
+	 *
+	 * @since 0.7.0
+	 * @var   string $plugin The Akamai Plugin class instance.
+	 */
+	public $plugin;
+
     /**
      * Initiate actions.
      *
-     * @param string $akamai The Akamai class instance.
+     * @param string $plugin The Akamai Plugin class instance.
      * @since 0.7.0
      */
-    public function __construct( $akamai ) {
-        $this->akamai = $akamai;
+    public function __construct( $plugin ) {
+        $this->plugin = $plugin;
 
+        // TODO, send these back to the plugin loader.
         $instance = $this; // Just to be PHP < 6.0 compliant.
         foreach ( $this->purge_post_actions() as $action ) {
             add_action(
@@ -83,11 +84,11 @@ class Akamai_Purge {
     }
 
     /**
-     * Callback for post changing events to purge keys.
+     * Callback for post changing events to trigger purges. THIS IS A WIP.
      *
-     * @since  0.7.0
-     * @param  int $post_id Post ID.
-     * @return void
+     * @since 0.7.0
+     * @param int    $post_id The post ID for the triggered post.
+     * @param string $action The action that triggered the purge.
      */
     public function purge_post( $post_id, $action ) {
         $purge_post_statuses = apply_filters(
@@ -98,18 +99,11 @@ class Akamai_Purge {
             return;
         }
 
-        // 1. Load credentials and generate auth client.
-        $auth = $this->akamai->get_edge_auth_client();
+        $settings = $this->plugin->get_settings();
 
-        // 2. TODO: check credentials.
-        // $test = test_fastly_api_connection( $fastly_hostname, $fastly_service_id, $fastly_api_key );
-        // if ( ! $test['status'] ) {
-        //     ... LOAD A WARNING ABOUT NO CREDS TO PURGE ...
-        // }
-
-        // 3. Load related items.
-        $cache_tags = Akamai_Cache_Tags::instance( $this->akamai )->get_tags_for_purge_post( $post_id );
-
+        // Generate objects to query. TODO: break out, switch on purge method.
+        $cache_tags =
+            Akamai_Cache_Tags::instance( $this->plugin )->get_tags_for_purge_post( $post_id );
         $purge_info = [
             'action'      => $action,
             'target-type' => 'post-' . get_post_type( $post_id ),
@@ -117,22 +111,23 @@ class Akamai_Purge {
             'cache-tags'  => $cache_tags,
             'purge-type'  => 'invalidate',
         ];
-
-        tpt_log( $purge_info );
-
-        // 4. Check if we really want to go through with this!
-        if ( ! apply_filters( 'akamai_do_purge', true, ...array_values( $purge_info ) ) ) {
+        $purge_params = array_values( $purge_info );
+        if ( ! apply_filters( 'akamai_do_purge', true, ...$purge_params ) ) {
             return;
         }
 
-        // 5. Send purge.
-        do_action( 'akamai_to_purge', ...array_values( $purge_info ) );
-        $options  = get_option( $this->akamai->get_plugin_name() );
-        $request  = new Akamai_Purge_Request( $auth, $options, $post_id );
-        $response = $request->purge();
-        do_action( 'akamai_purged', $response, ...array_values( $purge_info ) );
+        do_action( 'akamai_to_purge', ...$purge_params );
+        $client = new Akamai_Purge_Request(
+            $this->plugin->get_edge_auth_client(),
+            $this->plugin->get_user_agent()
+		);
+        $response = $client->purge(
+            $options = $settings,
+            $objects = $cache_tags
+        );
+        do_action( 'akamai_purged', $response, ...$purge_params );
 
-        // 6. Handle response.
+        // Handle response. TODO: break out.
         if ( $response instanceof \WP_Error ) {
             $instance = $this; // Just to be PHP < 6.0 compliant.
             add_filter(
@@ -154,16 +149,19 @@ class Akamai_Purge {
                 100
             );
         } else {
-            add_filter( 'redirect_post_location', [ $this, 'add_success_query_arg' ], 100);
+            add_filter(
+                'redirect_post_location', [ $this, 'add_success_query_arg' ], 100);
         }
     }
 
     /**
-     * ...
+     * Add query args to set notices and other changes after a submit/update
+     * that triggered a purge. MERGE WITH BELOW.
      *
      * By removing itself after running, it ensures that the hook is run
      * dynamically and once.
      *
+     * @since  0.1.0
      * @param  string $location The Location header of the redirect: passed in
      *                by the filter hook.
      * @param  string $response The HTTP response code of the redirect: passed
@@ -171,35 +169,49 @@ class Akamai_Purge {
      * @return string
      */
     public function add_error_query_arg( $location, $response ) {
-        remove_filter( 'redirect_post_location', [ $this, 'add_error_query_arg' ], 100 );
-        return add_query_arg( [ 'akamai-cache-purge-error' => urlencode( $response->detail ) ], $location );
+        remove_filter(
+            'redirect_post_location', [ $this, 'add_error_query_arg' ], 100 );
+        return add_query_arg(
+            [ 'akamai-cache-purge-error' => urlencode( $response->detail ) ],
+            $location
+        );
     }
 
     /**
-     * ...
+     * Add query args to set notices and other changes after a submit/update
+     * that triggered a purge. MERGE WITH ABOVE.
      *
      * By removing itself after running, it ensures that the hook is run
      * dynamically and once.
      *
+     * @since  0.1.0
      * @param  string $location The Location header of the redirect: passed in
      *                by the filter hook.
      * @return string The updated location.
      */
     public function add_success_query_arg( $location ) {
-        remove_filter( 'redirect_post_location', [ $this, 'add_success_query_arg' ], 100 );
-        return add_query_arg( [ 'akamai-cache-purge-success' => 'true' ], $location );
+        remove_filter(
+            'redirect_post_location', [ $this, 'add_success_query_arg' ], 100 );
+        return add_query_arg(
+            [ 'akamai-cache-purge-success' => 'true' ],
+            $location
+        );
     }
 
     /**
-     * ...
+     * Checks if queries have been set to create notices in the current page
+     * load, and if so display them.
      */
     public function display_purge_notices() {
         if ( isset( $_GET['akamai-cache-purge-error'] ) ) {
             ?>
             <div class="error notice is-dismissible">
                 <p>
-                    <img src="<?= Akamai_Admin::get_icon(); ?>" style="height: 1em" alt="Akamai for WordPress">&nbsp;
-                    <?php esc_html_e( 'Akamai: unable to purge cache: ' . $_GET['akamai-cache-purge-error'], 'akamai' ); ?>
+                    <img src="<?= Akamai_Admin::get_icon(); ?>"
+                         style="height: 1em" alt="Akamai for WordPress">&nbsp;
+                    <?php esc_html_e(
+                        'Akamai: unable to purge cache: ' .
+                        $_GET['akamai-cache-purge-error'], 'akamai' ); ?>
                 </p>
             </div>
             <?php
@@ -208,8 +220,11 @@ class Akamai_Purge {
             ?>
             <div class="updated notice notice-success is-dismissible">
                 <p>
-                    <img src="<?= Akamai_Admin::get_icon(); ?>" style="height: 1em" alt="Akamai for WordPress">&nbsp;
-                    <?php esc_html_e( 'Akamai: all related cache objects successfully purged.', 'akamai' ); ?>
+                    <img src="<?= Akamai_Admin::get_icon(); ?>"
+                         style="height: 1em" alt="Akamai for WordPress">&nbsp;
+                    <?php esc_html_e(
+                        'Akamai: all related cache objects successfully purged.',
+                        'akamai' ); ?>
                 </p>
             </div>
             <?php
@@ -220,7 +235,7 @@ class Akamai_Purge {
      * A list of post actions to initiate purge.
      *
      * @since  0.7.0
-     * @return array    List of actions.
+     * @return array List of actions.
      */
     private function purge_post_actions() {
         return apply_filters(
@@ -239,7 +254,7 @@ class Akamai_Purge {
      * A list of term actions to initiate purge.
      *
      * @since  0.7.0
-     * @return array    List of actions.
+     * @return array List of actions.
      */
     private function purge_term_actions() {
         return apply_filters(
