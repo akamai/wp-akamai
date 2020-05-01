@@ -19,7 +19,6 @@
  * API TO IMPLEMENT:
  *
  * get_tags_for_cache_header( ??? ) : [string]
- *
  * get_tags_for_purge_term( ??? )   : [string]
  * get_tags_for_purge_author( ??? ) : [string]
  *

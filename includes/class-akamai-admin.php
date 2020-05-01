@@ -298,10 +298,13 @@ class Akamai_Admin {
 	 * filling in defaults and checking for usefulness of data. If it fails
 	 * validation it generates error notices.
 	 *
-	 * @since 0.1.0
-	 * @param string $input The array of options to validate (a la $_POST).
-	 * @param bool   $verify_creds Whether to attempt to verify creds.
-	 *               Defaults to true.
+	 * Returns the completed settings in case used as part of a filter chain.
+	 *
+	 * @since  0.1.0
+	 * @param  string $input The array of options to validate (a la $_POST).
+	 * @param  bool   $verify_creds Whether to attempt to verify creds.
+	 *                Defaults to true.
+	 * @return array  The complete, current Akamai settings array.
 	 */
 	public function validate( $new_settings = [], $verify_creds = true ) {
 		$settings = apply_filters(
@@ -346,6 +349,8 @@ class Akamai_Admin {
 
 			}
 		}
+
+		return $settings;
 	}
 
 }
