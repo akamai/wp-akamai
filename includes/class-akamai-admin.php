@@ -114,7 +114,7 @@ class Akamai_Admin {
 		 */
 		wp_enqueue_style(
 			$this->name(),
-			plugin_dir_url( __FILE__ ) . 'css/akamai-admin.css',
+			plugin_dir_url( __DIR__ ) . 'admin/css/akamai-admin.css',
 			[],
 			$this->version(),
 			'all'
@@ -141,7 +141,7 @@ class Akamai_Admin {
 		 */
 		wp_enqueue_script(
 			$this->name(),
-			plugin_dir_url( __FILE__ ) . 'js/akamai-admin.js',
+			plugin_dir_url( __DIR__ ) . 'admin/js/akamai-admin.js',
 			[ 'jquery' ],
 			$this->version(),
 			false
@@ -198,7 +198,7 @@ class Akamai_Admin {
 	 * @since 0.1.0
 	 */
 	public function display_plugin_setup_page() {
-		include_once( 'partials/akamai-admin-display.php' );
+		include_once( plugin_dir_path( __DIR__ ) . 'admin/partials/akamai-admin-display.php' );
 	}
 
 	/**

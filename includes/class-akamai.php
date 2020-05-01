@@ -152,7 +152,7 @@ class Akamai {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-akamai-purge.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-akamai-purge-request.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-akamai-cache-tags.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-akamai-admin.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-akamai-admin.php';
 	}
 
 	/**
