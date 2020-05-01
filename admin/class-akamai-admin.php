@@ -78,15 +78,26 @@ class Akamai_Admin {
 	 * @var     array $default_options The default options settings.
 	 */
 	static public $default_options = [
-		// 'hostname' => ..., // Handled in Akamai::get_hostname().
-		'unique-sitecode' => '',
-		'debug-mode'      => 0,
+		// 'hostname'              => ..., // Handled in Akamai::get_hostname().
+		// 'purge-default-list'    => ..., // TODO: Handled in Akamai::default_purge_tags().
+		'unique-sitecode'       => '',
+		'log-errors'            => 0,
+		'log-purges'            => 0,
+		'emit-cache-headers'    => 0,
+		'emit-cache-tags'       => 0,
+		'cache-default-headers' => '',
+		'cache-related-tags'    => 1,
+		'purge-network'         => 'all',
+		'purge-type'            => 'invalidate',
+		'purge-method'          => 'tags',
+		'purge-related'         => 1,
+		'purge-default'         => 1,
+		'purge-on-comment'      => 0,
 
-		// TODO (PJ): May remove? These were in legacy plugin.
-		'purge_comments'   => 1,
-		'purge_tags'       => 1,
-		'purge_categories' => 1,
-		'purge_archives'   => 1,
+		// // TODO (PJ): May remove? These were in legacy plugin.
+		// 'purge-tags'       => 1,
+		// 'purge-categories' => 1,
+		// 'purge-archives'   => 1,
 	];
 
 	/**
@@ -310,7 +321,7 @@ class Akamai_Admin {
 	 * @param bool   $force_debug Optional. Whether to force debug. Defaults to false.
 	 */
 	public function add_settings_error( $code, $message, $type = 'error', $force_debug = false ) {
-		if ( $this->akamai->debug_mode() || $force_debug ) {
+		if ( $this->akamai->get_opt( 'log-errors' ) || $force_debug ) {
 			$payload = [ 'error' => "setting-error:$code", 'message' => $message ];
 			if ( $type !== 'error' ) {
 				$payload['type'] = $type;
@@ -344,7 +355,7 @@ class Akamai_Admin {
 		}
 		$values = apply_filters( 'akamai_settings_to_validate', $values );
 
-		$debug_mode = $this->akamai->debug_mode( $values );
+		$log_errors = $this->akamai->get_opt( 'log-errors', $values );
 
 		// Add warnings for required fields (for first time)...
 		$hostname = $this->akamai->get_hostname( $input );
@@ -352,11 +363,11 @@ class Akamai_Admin {
 			$values['hostname'] = $hostname;
 		} else {
 			$this->add_settings_error(
-				'hostname-missing', 'Missing "Public Hostname" setting.', 'error', $debug_mode );
+				'hostname-missing', 'Missing "Public Hostname" setting.', 'error', $log_errors );
 		}
 		if ( empty( $values['unique-sitecode'] ) ) {
 			$this->add_settings_error(
-				'sitecode-missing', 'Missing "Unique Site Code" setting.', 'error', $debug_mode );
+				'sitecode-missing', 'Missing "Unique Site Code" setting.', 'error', $log_errors );
 		}
 
 		// Check for valid credentials...
@@ -364,7 +375,7 @@ class Akamai_Admin {
 		foreach ( array_keys( static::$default_credentials ) as $credential ) {
 			if ( empty( $values['credentials'][$credential] ) && ! $missing_creds ) {
 				$this->add_settings_error(
-					'missing-credential', 'Missing necessary API credentials: can not purge.', 'warning', $debug_mode );
+					'missing-credential', 'Missing necessary API credentials: can not purge.', 'warning', $log_errors );
 				$missing_creds = true;
 			}
 		}
@@ -372,7 +383,7 @@ class Akamai_Admin {
 			$result = $this->verify_credentials( $values['credentials'] );
 			if ( isset( $result['error'] ) ) {
 				$this->add_settings_error(
-					'invalid-credentials', 'Invalid API credentials: ' . $result['error'], 'error', $debug_mode );
+					'invalid-credentials', 'Invalid API credentials: ' . $result['error'], 'error', $log_errors );
 
 			}
 		}

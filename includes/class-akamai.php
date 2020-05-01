@@ -176,13 +176,19 @@ class Akamai {
 	}
 
 	/**
-	 * A helper to extract plugin option settings.
+	 * A helper to extract plugin option settings. Allows us to use an
+	 * updated list of options (may or may not be complete) to get it.
 	 *
 	 * @since	0.7.0
 	 * @param	string	$option_name The setting name.
+	 * @param	array	$new_options Optional. A subset of options to override
+	 *                  system's. Defaults to an empty array.
 	 * @return	mixed	The setting value, or default if not set.
 	 */
-	public function get_opt( $option_name ) {
+	public function get_opt( $option_name, $new_options = [] ) {
+		if ( isset( $new_options[$option_name] ) ) {
+			return $new_options[$option_name];
+		}
 		$options = get_option( $this->plugin_name );
 		return isset( $options[$option_name] )
 			? $options[$option_name]
@@ -204,22 +210,6 @@ class Akamai {
 		return isset( $options['credentials'][$credential_name] )
 			? $options['credentials'][$credential_name]
 			: Akamai_Admin::$default_credentials[$credential_name];
-	}
-
-	/**
-	 * A helper to extract plugin setting for debug-mode.
-	 *
-	 * @since	0.7.0
-	 * @return	bool	If debug-mode enabled.
-	 */
-	public function debug_mode( $incoming_settings = null ) {
-		$debug_mode = false;
-		if ( ! empty( $incoming_settings ) && is_array( $incoming_settings ) ) {
-			$debug_mode = (bool) $incoming_settings['debug-mode'];
-		} else {
-			$debug_mode = (bool) $this->get_opt( 'debug-mode' );
-		}
-		return $debug_mode;
 	}
 
 	/**
