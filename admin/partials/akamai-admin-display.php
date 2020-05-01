@@ -11,7 +11,7 @@ $options = get_option( $this->plugin_name );
 
 		<?php $this->is_post_update() ? null : settings_errors(); ?>
 
-		<div class="wrap">
+		<div id="akamai-wrapper" class="wrap">
 			<form method="post" name="cleanup_options" action="options.php" autocomplete="off">
 				<h1><span><?php esc_attr_e( 'API Credentials', 'wp_admin_style' ); ?></span></h1>
 				<p>The below credentials can be retrieved either directly from the Akamai Identity and Access
@@ -24,7 +24,7 @@ $options = get_option( $this->plugin_name );
 				<?php settings_fields( $this->plugin_name ); ?>
 				<?php do_settings_sections( $this->plugin_name ); ?>
 
-				<table class="form-table">
+				<table id="akamai-creds-form-table" class="form-table">
 					<tbody>
 					<tr>
 						<th scope="row">
@@ -85,7 +85,10 @@ $options = get_option( $this->plugin_name );
 					</tr>
 					<tr>
 						<th scope="row"></th>
-						<td><button id="verify" type="button" class="button button-secondary" name="verify" disabled>Verify Credentials</button></td>
+						<td>
+							<button id="verify-creds" type="button" class="button button-secondary" name="verify" disabled style="display: inline-block; vertical-align: middle;">Verify Credentials</button>
+							<span id="verify-creds-spinner" class="spinner" style="float: none; margin-top: 0;"></span>
+						</td>
 					</tr>
 					</tbody>
 				</table>
