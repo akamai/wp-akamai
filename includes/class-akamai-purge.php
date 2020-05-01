@@ -91,6 +91,10 @@ class Akamai_Purge {
      * @param string $action The action that triggered the purge.
      */
     public function purge_post( $post_id, $action ) {
+        // Only run once per request.
+        if ( did_action( 'akamai_to_purge' ) ) {
+            return;
+        }
         $purge_post_statuses = apply_filters(
             'akamai_purge_post_statuses',
             [ 'publish', 'trash', 'future', 'draft' ]
@@ -127,30 +131,18 @@ class Akamai_Purge {
         );
         do_action( 'akamai_purged', $response, ...$purge_params );
 
-        // Handle response. TODO: break out.
-        if ( $response instanceof \WP_Error ) {
-            $instance = $this; // Just to be PHP < 6.0 compliant.
+        if ( $response['error'] ) {
             add_filter(
                 'redirect_post_location',
-                function( $location ) use ( $instance, $response ) {
-                    $error = (object) [ 'detail' => wp_json_encode( $response->errors ) ];
-                    return $instance->add_error_query_arg( $location, $error );
-                },
-                100
-            );
-        } elseif ( wp_remote_retrieve_response_code( $response ) !== 201 ) {
-            $instance = $this; // Just to be PHP < 6.0 compliant.
-            add_filter(
-                'redirect_post_location',
-                function( $location ) use ( $instance, $response ) {
-                    $body = json_decode( wp_remote_retrieve_body( $response ) );
-                    return $instance->add_error_query_arg( $location, $body );
-                },
+                [ $this, 'add_error_query_arg' ],
                 100
             );
         } else {
             add_filter(
-                'redirect_post_location', [ $this, 'add_success_query_arg' ], 100);
+                'redirect_post_location',
+                [ $this, 'add_success_query_arg' ],
+                100
+            );
         }
     }
 
@@ -172,7 +164,7 @@ class Akamai_Purge {
         remove_filter(
             'redirect_post_location', [ $this, 'add_error_query_arg' ], 100 );
         return add_query_arg(
-            [ 'akamai-cache-purge-error' => urlencode( $response->detail ) ],
+            [ 'akamai-cache-purge-error' => urlencode( $response['error'] ) ],
             $location
         );
     }
