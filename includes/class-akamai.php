@@ -261,6 +261,10 @@ class Akamai {
 				$objects[] = $this->get_item_url( $archive );
 			}
 		}
+		
+		if ( $options['purge_home'] ) {
+			$objects[] = home_url( '/' );
+		}
 
 		$data = array(
 			'hostname' => $host,
