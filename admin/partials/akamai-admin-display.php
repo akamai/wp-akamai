@@ -141,6 +141,22 @@ $options = get_option( $this->plugin_name );
 							</label>
 						</td>
 					</tr>
+					<tr>
+						<th scope="row">
+							<label for="<?php echo esc_attr( $this->plugin_name ); ?>-purge-home">
+								<?php esc_html_e( 'Purge home', $this->plugin_name ); ?>
+							</label>
+						</th>
+						<td>
+							<input type="checkbox" id="<?php echo esc_attr( $this->plugin_name ); ?>-purge-home"
+								name="<?php echo esc_attr( $this->plugin_name ); ?>[purge_home]"
+								value="1" <?php checked( $options['purge_home'] ); ?>"/>
+
+							<label for="<?php echo esc_attr( $this->plugin_name ); ?>-purge-home">
+								<span class="description">Purge home page</span>
+							</label>
+						</td>
+					</tr>
 					</tbody>
 				</table>
 				<button id="verify" type="button" class="button" name="verify">Verify Credentials</button>

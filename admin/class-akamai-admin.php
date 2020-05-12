@@ -204,6 +204,7 @@ class Akamai_Admin {
 			'purge_tags'       => 1,
 			'purge_categories' => 1,
 			'purge_archives'   => 1,
+			'purge_home'       => 1,
 		);
 
 		$akamai = new Akamai();
@@ -230,7 +231,7 @@ class Akamai_Admin {
 			$valid['section'] = $input['section'];
 		}
 
-		foreach ( array( 'purge_comments', 'purge_tags', 'purge_categories', 'purge_archives' ) as $checkbox ) {
+		foreach ( array( 'purge_comments', 'purge_tags', 'purge_categories', 'purge_archives', 'purge_home' ) as $checkbox ) {
 			$valid[ $checkbox ] = 0;
 			if ( isset( $input[ $checkbox ] ) && ! empty( $input[ $checkbox ] ) ) {
 				$valid[ $checkbox ] = 1;
