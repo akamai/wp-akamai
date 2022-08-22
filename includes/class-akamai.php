@@ -264,7 +264,7 @@ class Akamai {
 
 		$data = array(
 			'hostname' => $host,
-			'objects'  => apply_filters( 'wp_akamai_purge_objects ', $objects, $options, $post )
+			'objects'  => apply_filters( 'wp_akamai_purge_objects', $objects, $options, $post )
 		);
 
 		return json_encode( $data );
