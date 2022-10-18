@@ -239,7 +239,7 @@ class Akamai_Admin {
 
 		try {
 			$auth = \Akamai\Open\EdgeGrid\Authentication::createFromEdgeRcFile( $valid['section'], $valid['edgerc'] );
-		} catch ( \Akamai\Open\EdgeGrid\Exception\ConfigException $e ) {
+		} catch ( \Akamai\Open\EdgeGrid\Authentication\Exception\ConfigException $e ) {
 			add_settings_error( $this->plugin_name, 'edgerc-error', $e->getMessage() );
 		}
 
