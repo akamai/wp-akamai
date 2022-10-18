@@ -61,22 +61,14 @@ class Akamai_Admin {
 	 * @since    0.1.0
 	 */
 	public function enqueue_styles() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Akamai_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Akamai_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/akamai-admin.css', array(),
-			$this->version, 'all' );
-
+		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : 'min.';
+		wp_enqueue_style(
+			$this->plugin_name,
+			plugin_dir_url( __FILE__ ) . "css/akamai-admin.{$min}css",
+			array(),
+			$this->version,
+			'all'
+		);
 	}
 
 	/**
@@ -85,22 +77,14 @@ class Akamai_Admin {
 	 * @since    0.1.0
 	 */
 	public function enqueue_scripts() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Akamai_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Akamai_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/akamai-admin.js', array( 'jquery' ),
-			$this->version, false );
-
+		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : 'min.';
+		wp_enqueue_script(
+			$this->plugin_name,
+			plugin_dir_url( __FILE__ ) . "js/akamai-admin.{$min}js",
+			array( 'jquery' ),
+			$this->version,
+			false
+		);
 	}
 
 	/**
