@@ -50,7 +50,7 @@ $options = get_option( $this->plugin_name );
 						<td>
 							<input type="text" id="<?php echo $this->plugin_name; ?>-section"
 							       name="<?php echo $this->plugin_name; ?>[section]"
-							       value="<?= ( isset( $options['edgerc'] ) ) ? esc_attr( $options['section'] ) : 'default'; ?>"
+							       value="<?= ( isset( $options['section'] ) ) ? esc_attr( $options['section'] ) : 'default'; ?>"
 							       class="regular-text"/>
 							<br>
 							<span class="description">The credentials must have access to the CCU API.</span>
