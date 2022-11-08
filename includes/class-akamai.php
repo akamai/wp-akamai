@@ -230,13 +230,13 @@ class Akamai {
 			$this->get_item_url( $permalink ), // Post
 		);
 
-		if ( $options['purge_front'] ) {
+		if ( ! empty( $options['purge_front'] ) && $options['purge_front'] ) {
 			$objects[] = $baseUrl;
 		}
 
 		$host = $this->get_hostname($options);
 
-		if ( $options['purge_tags'] ) {
+		if ( ! empty( options['purge_tags'] ) && $options['purge_tags'] ) {
 			$tags = get_the_tags( $post->ID );
 			if ( $tags !== false && ! ( $tags instanceof WP_Error ) ) {
 				foreach ( $tags as $tag ) {
@@ -245,7 +245,7 @@ class Akamai {
 			}
 		}
 
-		if ( $options['purge_categories'] ) {
+		if ( ! empty( $options['purge_categories'] ) && $options['purge_categories'] ) {
 			$categories = get_the_category( $post->ID );
 			if ( $categories !== false && ! ( $categories instanceof WP_Error ) ) {
 				foreach ( $categories as $category ) {
@@ -255,7 +255,7 @@ class Akamai {
 			}
 		}
 
-		if ( $options['purge_archives'] ) {
+		if ( ! empty( $options['purge_archives'] ) && $options['purge_archives'] ) {
 			$archive = get_month_link( get_post_time( 'Y', false, $post ), get_post_time( 'm', false, $post ) );
 			if ( $archive !== false && ! ( $archive instanceof WP_Error ) ) {
 				$objects[] = $this->get_item_url( $archive );
@@ -306,7 +306,7 @@ class Akamai {
 	 */
 	protected function get_purge_auth( $options, $body ) {
 	    try {
-		    $auth = \Akamai\Open\EdgeGrid\Authentication::createFromEdgeRcFile( $options['section'], $options['edgerc'] );
+		    $auth = \Akamai\Open\EdgeGrid\Authentication::createFromEdgeRcFile( $options['section'] ?? '', $options['edgerc'] ?? '' );
 		    $auth->setHttpMethod( 'POST' );
 		    $auth->setPath( '/ccu/v3/invalidate/url' );
 		    $auth->setBody( $body );
