@@ -1,8 +1,8 @@
 === Akamai for WordPress ===
-Contributors: dshafik
+Contributors: dshafik, jasontremblay, salzano
 Tags: akamai, cache, purge, cdn
 Requires at least: 4.3
-Tested up to: 4.9
+Tested up to: 6.1.0
 Stable tag: trunk
 License: Apache 2.0
 License URI: https://www.apache.org/licenses/LICENSE-2.0
@@ -23,7 +23,16 @@ This plugin is developed on [GitHub](https://github.com/akamai/wp-akamai). Issue
 
 1. Upload the plugin directory to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Edit the Settings to add credentials
+1. Find 'Akamai for WP' in the dashboard menu and configure the plugin's settings
+
+= How to Obtain Credentials =
+
+1. Login to Akamai Control Center.
+1. In the main menu, find Account Admin → Identity and access.
+1. Choose Create API Client under Users and API Clients.
+1. Find the Select APIs button, and allow READ-WRITE for CCU APIs.
+1. No selection needed under the Manage purge options button.
+1. If you need help providing values for other fields like role/group, contact your Akamai account representative or consult [https://techdocs.akamai.com/developer/docs/set-up-authentication-credentials](https://techdocs.akamai.com/developer/docs/set-up-authentication-credentials).
 
 == Frequently Asked Questions ==
 
@@ -51,6 +60,17 @@ In addition, there is a strictly enforced 50,000 byte limit on the size of each 
 1. Akamai for WordPress Settings screen
 
 == Changelog ==
+
+= 0.6.1 =
+* [Fixed] Purge cached post when post is trashed
+* [Fixed] Purge cached post when comment is received
+* [Fixed] Purge cached post when comment status is changed
+* [Fixed] Prevent fatal errors when the Save Settings button is pressed
+* [Fixed] Prevent "Unable to purge cache" errors
+* [Fixed] Fix file path when searching for .edgerc file in home directory
+* [Fixed] Fix missing admin menu icon
+* [Changed] Changes tested up to version number to 6.1.0
+
 
 = 0.6 =
 
