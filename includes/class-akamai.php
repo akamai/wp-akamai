@@ -204,7 +204,7 @@ class Akamai {
 		if ($comment_approved == 1) {
 			$options = get_option( $this->plugin_name );
 
-			if ( $options['purge_comments'] ) {
+			if ( ! empty( $options['purge_comments'] ) && $options['purge_comments'] ) {
 				$post = get_post($comment_data['comment_post_ID']);
 				$this->purge($options, $post);
 			}
