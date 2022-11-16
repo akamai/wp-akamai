@@ -53,7 +53,26 @@ $options = get_option( $this->plugin_name );
 									value="<?= ( isset( $options['section'] ) ) ? esc_attr( $options['section'] ) : 'default'; ?>"
 									class="regular-text"/>
 							<br>
-							<span class="description">The credentials must have access to the CCU API.</span>
+							<span class="description">The credentials must have access to the <b>CCU APIs</b>.</span>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<h2 class="title" id="how-to-obtain-credentials"><?php esc_attr_e( 'How to Obtain Credentials', 'wp_admin_style' ); ?></h2>
+				<table class="form-table">
+					<tbody>
+					<tr>
+						<th scope="row">
+						</th>
+						<td>
+							<ol class="how-to">
+								<li>Login to <b>Akamai Control Center</b>.</li>
+								<li>In the main menu, find <b>Account Admin</b> → <b>Identity and access</b>.</li>
+								<li>Choose <b>Create API Client</b> under <b>Users and API Clients</b>.</li>
+								<li>Find the <b>Select APIs</b> button, and allow <b>READ-WRITE</b> for <b>CCU APIs</b>.</li>
+								<li>No selection needed under the <b>Manage purge options</b> button.</li>
+								<li>If you need help providing values for other fields like role/group, contact your Akamai account representative or consult <a href="https://techdocs.akamai.com/developer/docs/set-up-authentication-credentials">https://techdocs.akamai.com/developer/docs/set-up-authentication-credentials</a>.</b>
+							</ol>
 						</td>
 					</tr>
 					</tbody>
@@ -143,8 +162,10 @@ $options = get_option( $this->plugin_name );
 					</tr>
 					</tbody>
 				</table>
-				<button id="verify" type="button" class="button" name="verify">Verify Credentials</button>
-				<?php submit_button( 'Save settings', 'primary', 'submit', false ); ?>
+				<p class="submit">
+					<button id="verify" type="button" class="button" name="verify">Verify Credentials</button>
+					<?php submit_button( 'Save settings', 'primary', 'submit', false ); ?>
+				</p>
 			</form>
 		</div>
 	</div>

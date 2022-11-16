@@ -44,3 +44,7 @@
         background-image: url(../../assets/banner-4632x1500.jpg);
     }
 }
+
+.akamai-content ol.how-to{
+	margin-top: 0;
+}
