@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -92,7 +91,6 @@ class Akamai_Admin {
 	 *
 	 * @since    0.1.0
 	 */
-
 	public function add_plugin_admin_menu() {
 
 		/*
