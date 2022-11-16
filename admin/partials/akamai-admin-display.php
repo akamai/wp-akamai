@@ -28,8 +28,8 @@ $options = get_option( $this->plugin_name );
 						</th>
 						<td>
 							<input type="text" id="<?php echo $this->plugin_name; ?>-edgerc"
-							       name="<?php echo $this->plugin_name; ?>[edgerc]" class="regular-text"
-							       value="<?= ( isset( $options['edgerc'] ) ) ? esc_attr( $options['edgerc'] ) : ''; ?>"/>
+									name="<?php echo $this->plugin_name; ?>[edgerc]" class="regular-text"
+									value="<?= ( isset( $options['edgerc'] ) ) ? esc_attr( $options['edgerc'] ) : ''; ?>"/>
 							<br>
 							<?php
 							$paths = array();
@@ -49,9 +49,9 @@ $options = get_option( $this->plugin_name );
 						</th>
 						<td>
 							<input type="text" id="<?php echo $this->plugin_name; ?>-section"
-							       name="<?php echo $this->plugin_name; ?>[section]"
-							       value="<?= ( isset( $options['section'] ) ) ? esc_attr( $options['section'] ) : 'default'; ?>"
-							       class="regular-text"/>
+									name="<?php echo $this->plugin_name; ?>[section]"
+									value="<?= ( isset( $options['section'] ) ) ? esc_attr( $options['section'] ) : 'default'; ?>"
+									class="regular-text"/>
 							<br>
 							<span class="description">The credentials must have access to the CCU API.</span>
 						</td>
@@ -70,8 +70,8 @@ $options = get_option( $this->plugin_name );
 						<td>
 							<?php $akamai = new Akamai(); ?>
 							<input type="text" id="<?php echo $this->plugin_name; ?>-hostname"
-							       name="<?php echo $this->plugin_name; ?>[hostname]"
-							       value="<?php echo $akamai->get_hostname($options); ?>"/>
+									name="<?php echo $this->plugin_name; ?>[hostname]"
+									value="<?php echo $akamai->get_hostname($options); ?>"/>
 							<br>
 							<span class="description">Public hostname for this site</span>
 						</td>
@@ -84,8 +84,8 @@ $options = get_option( $this->plugin_name );
 						</th>
 						<td>
 							<input type="checkbox" id="<?php echo $this->plugin_name; ?>-purge-comments"
-							       name="<?php echo $this->plugin_name; ?>[purge_comments]"
-							       value="1" <?php checked( $options['purge_comments'] ?? false ); ?>"/>
+									name="<?php echo $this->plugin_name; ?>[purge_comments]"
+									value="1" <?php checked( $options['purge_comments'] ?? false ); ?>"/>
 
 							<label for="<?php echo $this->plugin_name; ?>-purge-comments">
 								<span class="description">Purge relevant content when a successful comment is submitted</span>
@@ -100,8 +100,8 @@ $options = get_option( $this->plugin_name );
 						</th>
 						<td>
 							<input type="checkbox" id="<?php echo $this->plugin_name; ?>-purge-tags"
-							       name="<?php echo $this->plugin_name; ?>[purge_tags]"
-							       value="1" <?php checked( $options['purge_tags'] ?? false ); ?>"/>
+									name="<?php echo $this->plugin_name; ?>[purge_tags]"
+									value="1" <?php checked( $options['purge_tags'] ?? false ); ?>"/>
 
 							<label for="<?php echo $this->plugin_name; ?>-purge-tags">
 								<span class="description">Purge archive pages for tags associated with the post</span>
@@ -116,8 +116,8 @@ $options = get_option( $this->plugin_name );
 						</th>
 						<td>
 							<input type="checkbox" id="<?php echo $this->plugin_name; ?>-purge-categories"
-							       name="<?php echo $this->plugin_name; ?>[purge_categories]"
-							       value="1" <?php checked( $options['purge_categories'] ?? false ); ?>"/>
+									name="<?php echo $this->plugin_name; ?>[purge_categories]"
+									value="1" <?php checked( $options['purge_categories'] ?? false ); ?>"/>
 
 							<label for="<?php echo $this->plugin_name; ?>-purge-categories">
 								<span
@@ -133,8 +133,8 @@ $options = get_option( $this->plugin_name );
 						</th>
 						<td>
 							<input type="checkbox" id="<?php echo $this->plugin_name; ?>-purge-archives"
-							       name="<?php echo $this->plugin_name; ?>[purge_archives]"
-							       value="1" <?php checked( $options['purge_archives'] ?? false ); ?>"/>
+									name="<?php echo $this->plugin_name; ?>[purge_archives]"
+									value="1" <?php checked( $options['purge_archives'] ?? false ); ?>"/>
 
 							<label for="<?php echo $this->plugin_name; ?>-purge-archives">
 								<span class="description">Purge archive pages associated with the post</span>
