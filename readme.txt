@@ -62,18 +62,18 @@ In addition, there is a strictly enforced 50,000 byte limit on the size of each 
 == Changelog ==
 
 = 0.6.1 =
+* [Added] Adds instructions to obtain credentials
 * [Fixed] Purge cached post when post is trashed
 * [Fixed] Purge cached post when comment is received
 * [Fixed] Purge cached post when comment status is changed
 * [Fixed] Prevent fatal errors when the Save Settings button is pressed
-* [Fixed] Prevent "Unable to purge cache" errors
+* [Fixed] Prevent "Expect 100-continue header is not supported" errors
 * [Fixed] Fix file path when searching for .edgerc file in home directory
 * [Fixed] Fix missing admin menu icon
-* [Changed] Changes tested up to version number to 6.1.0
-
+* [Changed] Changes tested up to version number to 6.1.1
+* [Changed] Updates screenshot
 
 = 0.6 =
-
 * Fix fatal errors when no .edgerc exists or is not found
 
 = 0.5 =
