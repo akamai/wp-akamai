@@ -184,7 +184,7 @@ class Akamai_Admin {
 			'edgerc'           => null,
 			'section'          => 'default',
 			'hostname'         => '',
-            'purge_comemnts'   => 1,
+			'purge_comments'   => 1,
 			'purge_tags'       => 1,
 			'purge_categories' => 1,
 			'purge_archives'   => 1,
