@@ -33,8 +33,8 @@ $options = get_option( $this->plugin_name );
 							<br>
 							<?php
 							$paths = array();
-							if ( isset( $_SERVER['HOME'] ) ) {
-								$paths[] = $_SERVER['HOME'];
+							if ( isset( $_SERVER['DOCUMENT_ROOT'] ) ) {
+								$paths[] = $_SERVER['DOCUMENT_ROOT'];
 							}
 							$paths[] = 'the current working directory';
 							?>

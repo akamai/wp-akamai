@@ -137,7 +137,9 @@ class Akamai {
 
 		// Purging Actions/Hooks
 		$this->loader->add_action( 'save_post', $this, 'purgeOnPost' );
-		$this->loader->add_action( 'comment_post', $this, 'purgeOnPost', 10, 3 );
+		$this->loader->add_action( 'wp_trash_post', $this, 'purgeOnPost' );
+		$this->loader->add_action( 'comment_post', $this, 'purgeOnComment', 10, 3 );
+		$this->loader->add_action( 'transition_comment_status', $this, 'purgeOnCommentStatus', 10, 3 );
 		$this->loader->add_action( 'admin_notices', $this, 'admin_notices' );
 		$this->loader->add_action( 'send_headers', $this, 'sendHeaders' );
 	}
@@ -206,6 +208,16 @@ class Akamai {
 
 			if ( ! empty( $options['purge_comments'] ) && $options['purge_comments'] ) {
 				$post = get_post($comment_data['comment_post_ID']);
+				$this->purge($options, $post);
+			}
+		}
+	}
+
+	public function purgeOnCommentStatus($new_status, $old_status, $comment) {
+		if($old_status != $new_status) {
+			$options = get_option( $this->plugin_name );
+			if ( ! empty( $options['purge_comments'] ) && $options['purge_comments'] ) {
+				$post = get_post($comment->comment_post_ID);
 				$this->purge($options, $post);
 			}
 		}
