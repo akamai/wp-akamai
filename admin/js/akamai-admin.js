@@ -11,27 +11,25 @@
 				'section': $('#akamai-section').val()
 			};
 
-			// We can also pass the url value separately from ajaxurl for front end AJAX implementations
 			$.post(ajaxurl, data, function(response) {
 				var response = $.parseJSON(response);
-				var timeout = false;
 
 				if ($('#verify-msg').length == 0) {
-					$('#verify').before($('<div id="verify-msg" class="notice"></div>'));
-				} else {
-					$('#verify-msg').empty();
-				}
-
-				if (timeout) {
-					clearInterval(timeout);
+					$('#verify').before($('<div id="verify-msg" class="notice is-dismissible"><button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button></div>'));
 				}
 
 				var msg = $('#verify-msg');
 
-				timeout = setTimeout(function() {
-					msg.fadeOut();
-					msg.remove();
-				}, 5000);
+				//Make the dismiss notice button remove the notice
+				var $button = $('#verify-msg button');
+				$button.on( 'click', function( event ) {
+					event.preventDefault();
+					msg.fadeTo( 100, 0, function() {
+						msg.slideUp( 100, function() {
+							msg.remove();
+						});
+					});
+				});
 
 				if (response.success) {
 					msg.removeClass('notice-error');
