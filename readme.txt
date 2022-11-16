@@ -2,7 +2,7 @@
 Contributors: dshafik
 Tags: akamai, cache, purge, cdn
 Requires at least: 4.3
-Tested up to: 4.7
+Tested up to: 4.9
 Stable tag: trunk
 License: Apache 2.0
 License URI: https://www.apache.org/licenses/LICENSE-2.0
@@ -17,7 +17,7 @@ With the Fast Purge API, you can automate your publishing flow to maximize perfo
 
 = Development & Support =
 
-This plugin is developed on [GitHub](https://github.com/akamai-open/wp-akamai). Issues should be filed [here](https://github.com/akamai-open/wp-akamai/issues).
+This plugin is developed on [GitHub](https://github.com/akamai/wp-akamai). Issues should be filed [here](https://github.com/akamai/wp-akamai/issues).
 
 == Installation ==
 
@@ -52,6 +52,10 @@ In addition, there is a strictly enforced 50,000 byte limit on the size of each 
 
 == Changelog ==
 
+= 0.6 =
+
+* Fix fatal errors when no .edgerc exists or is not found
+
 = 0.5 =
 * Fix banner image
 
@@ -69,6 +73,6 @@ In addition, there is a strictly enforced 50,000 byte limit on the size of each 
 
 == References ==
 
-* [Akamai {OPEN} APIs](https://developer.akamai.com)
+* [Akamai OPEN APIs](https://developer.akamai.com)
 * [Akamai Credentials](https://developer.akamai.com/introduction/Identity_Model.html)
 * [Content Control Utility API v3 (CCUv3) Documentation](https://developer.akamai.com/api/purge/ccu/overview.html)
