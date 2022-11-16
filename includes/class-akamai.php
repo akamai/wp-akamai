@@ -216,13 +216,13 @@ class Akamai {
 	public function purgeOnCommentStatus($new_status, $old_status, $comment) {
 		if($old_status != $new_status) {
 			$options = get_option( $this->plugin_name );
-			if ( $options['purge_comments'] ) {
+			if ( ! empty( $options['purge_comments'] ) && $options['purge_comments'] ) {
 				$post = get_post($comment->comment_post_ID);
 				$this->purge($options, $post);
 			}
 		}
 	}
-	
+
 	public function sendHeaders($WP)
 	{
 
