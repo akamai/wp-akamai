@@ -393,6 +393,7 @@ class Akamai {
 			'headers' => array(
 				'Authorization' => $auth->createAuthHeader(),
 				'Content-Type' => 'application/json',
+				'Expect' => '',
 			),
 			'body' => $body
 		));
