@@ -6,14 +6,14 @@ $options = get_option( $this->plugin_name );
 <div class="akamai-content">
 	<div class="akamai-frame">
 		<header>
-			<h1>Akamai for WordPress</h1>
+			<h1><?php esc_html_e( 'Akamai for WordPress', 'akamai' ); ?></h1>
 		</header>
 
 		<?php settings_errors(); ?>
 
 		<div class="wrap">
 			<form method="post" name="cleanup_options" action="options.php">
-				<h1><span><?php esc_attr_e( 'API Credentials', 'wp_admin_style' ); ?></span></h1>
+				<h1><span><?php esc_html_e( 'API Credentials', 'akamai' ); ?></span></h1>
 
 				<?php settings_fields( $this->plugin_name ); ?>
 				<?php do_settings_sections( $this->plugin_name ); ?>
@@ -22,13 +22,13 @@ $options = get_option( $this->plugin_name );
 					<tbody>
 					<tr>
 						<th scope="row">
-							<label for="<?php echo $this->plugin_name; ?>-edgerc">
-								<?php _e( '<code>.edgerc</code> file location', $this->plugin_name ); ?>
+							<label for="<?php echo esc_attr( $this->plugin_name ); ?>-edgerc">
+								<?php _e( '<code>.edgerc</code> file location', 'akamai' ); ?>
 							</label>
 						</th>
 						<td>
-							<input type="text" id="<?php echo $this->plugin_name; ?>-edgerc"
-									name="<?php echo $this->plugin_name; ?>[edgerc]" class="regular-text"
+							<input type="text" id="<?php echo esc_attr( $this->plugin_name ); ?>-edgerc"
+									name="<?php echo esc_attr( $this->plugin_name ); ?>[edgerc]" class="regular-text"
 									value="<?= ( isset( $options['edgerc'] ) ) ? esc_attr( $options['edgerc'] ) : ''; ?>"/>
 							<br>
 							<?php
@@ -36,29 +36,35 @@ $options = get_option( $this->plugin_name );
 							if ( isset( $_SERVER['DOCUMENT_ROOT'] ) ) {
 								$paths[] = $_SERVER['DOCUMENT_ROOT'];
 							}
-							$paths[] = 'the current working directory';
+							$paths[] = __( 'the current working directory', 'akamai' );
 							?>
-							<span class="description">By default, we'll look in <?= implode( ' and ', $paths ); ?>.</span>
+							<span class="description"><?php esc_html_e( 'By default, we\'ll look in ', 'akamai' );
+							echo implode( __( ' and ', 'akamai' ), $paths );
+							?>.</span>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row">
-							<label for="<?php echo $this->plugin_name; ?>-section">
-								<?php _e( '<code>.edgerc</code> section', $this->plugin_name ); ?>
+							<label for="<?php echo esc_attr( $this->plugin_name ); ?>-section">
+								<?php _e( '<code>.edgerc</code> section', 'akamai' ); ?>
 							</label>
 						</th>
 						<td>
-							<input type="text" id="<?php echo $this->plugin_name; ?>-section"
-									name="<?php echo $this->plugin_name; ?>[section]"
-									value="<?= ( isset( $options['section'] ) ) ? esc_attr( $options['section'] ) : 'default'; ?>"
+							<input type="text" id="<?php echo esc_attr( $this->plugin_name ); ?>-section"
+									name="<?php echo esc_attr( $this->plugin_name ); ?>[section]"
+									value="<?php echo esc_attr( ( isset( $options['section'] ) ) ? esc_attr( $options['section'] ) : 'default' ); ?>"
 									class="regular-text"/>
 							<br>
-							<span class="description">The credentials must have access to the <b>CCU APIs</b>.</span>
+							<span class="description"><?php printf(
+								'%s <b>%s</b>.',
+								esc_html( 'The credentials must have access to the', 'akamai' ),
+								esc_html( 'CCU APIs', 'akamai' )
+							); ?></span>
 						</td>
 					</tr>
 					</tbody>
 				</table>
-				<h2 class="title" id="how-to-obtain-credentials"><?php esc_attr_e( 'How to Obtain Credentials', 'wp_admin_style' ); ?></h2>
+				<h2 class="title" id="how-to-obtain-credentials"><?php esc_attr_e( 'How to Obtain Credentials', 'akamai' ); ?></h2>
 				<table class="form-table">
 					<tbody>
 					<tr>
@@ -66,104 +72,132 @@ $options = get_option( $this->plugin_name );
 						</th>
 						<td>
 							<ol class="how-to">
-								<li>Login to <b>Akamai Control Center</b>.</li>
-								<li>In the main menu, find <b>Account Admin</b> → <b>Identity and access</b>.</li>
-								<li>Choose <b>Create API Client</b> under <b>Users and API Clients</b>.</li>
-								<li>Find the <b>Select APIs</b> button, and allow <b>READ-WRITE</b> for <b>CCU APIs</b>.</li>
-								<li>No selection needed under the <b>Manage purge options</b> button.</li>
-								<li>If you need help providing values for other fields like role/group, contact your Akamai account representative or consult <a href="https://techdocs.akamai.com/developer/docs/set-up-authentication-credentials">https://techdocs.akamai.com/developer/docs/set-up-authentication-credentials</a>.</b>
+								<li><?php printf( 
+									'%s <b>%s</b>.',
+									esc_html__( 'Login to', 'akamai' ),
+									esc_html__( 'Akamai Control Center', 'akamai' )
+								); ?></li>
+								<li><?php printf(
+									'%s <b>%s</b> → <b>%s</b>.',
+									esc_html__( 'In the main menu, find', 'akamai' ),
+									esc_html__( 'Account Admin', 'akamai' ),
+									esc_html__( 'Identity and access', 'akamai' )
+								); ?></li>
+								<li><?php printf(
+									'%s <b>%s</b> %s <b>%s</b>.',
+									esc_html__( 'Choose', 'akamai' ),
+									esc_html__( 'Create API Client', 'akamai' ),
+									esc_html__( 'under', 'akamai' ),
+									esc_html__( 'Users and API Clients', 'akamai' )
+								); ?></li>
+								<li><?php printf(
+									'%s <b>%s</b> %s <b>%s</b> %s <b>%s</b>.',
+									esc_html__( 'Find the' ),
+									esc_html__( 'Select APIs' ),
+									esc_html__( 'button, and allow' ),
+									esc_html__( 'READ-WRITE', 'akamai' ),
+									esc_html__( 'for', 'akamai' ),
+									esc_html__( 'CCU APIs', 'akamai' )
+								); ?></li>
+								<li><?php printf(
+									'%s <b>%s</b> %s.',
+									esc_html__( 'No selection needed under the', 'akamai' ),
+									esc_html__( 'Manage purge options', 'akamai' ),
+									esc_html__( 'button', 'akamai' )
+								); ?></li>
 							</ol>
+							<p class="description"><?php esc_html_e( 'If you need help providing values for other fields like role/group, contact your Akamai account representative or consult', 'akamai' ); ?> <a href="https://techdocs.akamai.com/developer/docs/set-up-authentication-credentials">https://techdocs.akamai.com/developer/docs/set-up-authentication-credentials</a>.</p>
 						</td>
 					</tr>
 					</tbody>
 				</table>
-				<h1><span><?php esc_attr_e( 'Purge Options', 'wp_admin_style' ); ?></span></h1>
+				<h1><span><?php esc_attr_e( 'Purge Options', 'akamai' ); ?></span></h1>
 				<table class="form-table">
 					<tbody>
 					<tr>
 						<th scope="row">
-							<label for="<?php echo $this->plugin_name; ?>-hostname">
-								<?php _e( 'Public Hostname', $this->plugin_name ); ?>
+							<label for="<?php echo esc_attr( $this->plugin_name ); ?>-hostname">
+								<?php _e( 'Public Hostname', 'akamai' ); ?>
 							</label>
 						</th>
 						<td>
 							<?php $akamai = new Akamai(); ?>
-							<input type="text" id="<?php echo $this->plugin_name; ?>-hostname"
-									name="<?php echo $this->plugin_name; ?>[hostname]"
-									value="<?php echo $akamai->get_hostname($options); ?>"/>
+							<input type="text" id="<?php echo esc_attr( $this->plugin_name ); ?>-hostname"
+									name="<?php echo esc_attr( $this->plugin_name ); ?>[hostname]"
+									value="<?php echo esc_attr( $akamai->get_hostname( $options ) ); ?>"/>
 							<br>
-							<span class="description">Public hostname for this site</span>
+							<span class="description"><?php esc_html_e( 'Public hostname for this site', 'akamai' ); ?></span>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row">
-							<label for="<?php echo $this->plugin_name; ?>-purge-comments">
-								<?php _e( 'Purge On Comment', $this->plugin_name ); ?>
+							<label for="<?php echo esc_attr( $this->plugin_name ); ?>-purge-comments">
+								<?php esc_html_e( 'Purge On Comment', 'akamai' ); ?>
 							</label>
 						</th>
 						<td>
-							<input type="checkbox" id="<?php echo $this->plugin_name; ?>-purge-comments"
-									name="<?php echo $this->plugin_name; ?>[purge_comments]"
+							<input type="checkbox" id="<?php echo esc_attr( $this->plugin_name ); ?>-purge-comments"
+									name="<?php echo esc_attr( $this->plugin_name ); ?>[purge_comments]"
 									value="1" <?php checked( $options['purge_comments'] ?? false ); ?>"/>
 
-							<label for="<?php echo $this->plugin_name; ?>-purge-comments">
-								<span class="description">Purge relevant content when a successful comment is submitted</span>
+							<label for="<?php echo esc_attr( $this->plugin_name ); ?>-purge-comments">
+								<span class="description"><?php esc_html_e( 'Purge relevant content when a successful comment is submitted', 'akamai' ); ?></span>
 							</label>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row">
-							<label for="<?php echo $this->plugin_name; ?>-purge-tags">
-								<?php _e( 'Purge Related Tag Archives', $this->plugin_name ); ?>
+							<label for="<?php echo esc_attr( $this->plugin_name ); ?>-purge-tags">
+								<?php esc_html_e( 'Purge Related Tag Archives', 'akamai' ); ?>
 							</label>
 						</th>
 						<td>
-							<input type="checkbox" id="<?php echo $this->plugin_name; ?>-purge-tags"
-									name="<?php echo $this->plugin_name; ?>[purge_tags]"
+							<input type="checkbox" id="<?php echo esc_attr( $this->plugin_name ); ?>-purge-tags"
+									name="<?php echo esc_attr( $this->plugin_name ); ?>[purge_tags]"
 									value="1" <?php checked( $options['purge_tags'] ?? false ); ?>"/>
 
-							<label for="<?php echo $this->plugin_name; ?>-purge-tags">
-								<span class="description">Purge archive pages for tags associated with the post</span>
+							<label for="<?php echo esc_attr( $this->plugin_name ); ?>-purge-tags">
+								<span class="description"><?php esc_html_e( 'Purge archive pages for tags associated with the post', 'akamai' ); ?></span>
 							</label>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row">
-							<label for="<?php echo $this->plugin_name; ?>-purge-categories">
-								<?php _e( 'Purge Related Category Archives', $this->plugin_name ); ?>
+							<label for="<?php echo esc_attr( $this->plugin_name ); ?>-purge-categories">
+								<?php esc_html_e( 'Purge Related Category Archives', 'akamai' ); ?>
 							</label>
 						</th>
 						<td>
-							<input type="checkbox" id="<?php echo $this->plugin_name; ?>-purge-categories"
-									name="<?php echo $this->plugin_name; ?>[purge_categories]"
+							<input type="checkbox" id="<?php echo esc_attr( $this->plugin_name ); ?>-purge-categories"
+									name="<?php echo esc_attr( $this->plugin_name ); ?>[purge_categories]"
 									value="1" <?php checked( $options['purge_categories'] ?? false ); ?>"/>
 
-							<label for="<?php echo $this->plugin_name; ?>-purge-categories">
+							<label for="<?php echo esc_attr( $this->plugin_name ); ?>-purge-categories">
 								<span
-									class="description">Purge archive pages for categories associated with the post</span>
+									class="description"><?php esc_html_e( 'Purge archive pages for categories associated with the post', 'akamai' ); ?></span>
 							</label>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row">
-							<label for="<?php echo $this->plugin_name; ?>-purge-archives">
-								<?php _e( 'Purge Related Archives', $this->plugin_name ); ?>
+							<label for="<?php echo esc_attr( $this->plugin_name ); ?>-purge-archives">
+								<?php esc_html_e( 'Purge Related Archives', 'akamai' ); ?>
 							</label>
 						</th>
 						<td>
-							<input type="checkbox" id="<?php echo $this->plugin_name; ?>-purge-archives"
-									name="<?php echo $this->plugin_name; ?>[purge_archives]"
+							<input type="checkbox" id="<?php echo esc_attr( $this->plugin_name ); ?>-purge-archives"
+									name="<?php echo esc_attr( $this->plugin_name ); ?>[purge_archives]"
 									value="1" <?php checked( $options['purge_archives'] ?? false ); ?>"/>
 
-							<label for="<?php echo $this->plugin_name; ?>-purge-archives">
-								<span class="description">Purge archive pages associated with the post</span>
+							<label for="<?php echo esc_attr( $this->plugin_name ); ?>-purge-archives">
+								<span class="description"><?php esc_html_e( 'Purge archive pages associated with the post', 'akamai' ); ?></span>
 							</label>
 						</td>
 					</tr>
 					</tbody>
 				</table>
 				<p class="submit">
-					<button id="verify" type="button" class="button" name="verify">Verify Credentials</button>
+					<button id="verify" type="button" class="button" name="verify"><?php esc_html_e( 'Verify Credentials', 'akamai' ); ?></button>
 					<?php submit_button( 'Save settings', 'primary', 'submit', false ); ?>
 				</p>
 			</form>
