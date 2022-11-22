@@ -248,7 +248,7 @@ class Akamai {
 
 		$host = $this->get_hostname($options);
 
-		if ( ! empty( options['purge_tags'] ) && $options['purge_tags'] ) {
+		if ( ! empty( $options['purge_tags'] ) && $options['purge_tags'] ) {
 			$tags = get_the_tags( $post->ID );
 			if ( $tags !== false && ! ( $tags instanceof WP_Error ) ) {
 				foreach ( $tags as $tag ) {
