@@ -180,7 +180,7 @@ class Akamai_Admin {
 	}
 
 	public function validate( $input ) {
-		// All checkboxes inputs
+
 		$valid = array(
 			'edgerc'           => null,
 			'section'          => 'default',
