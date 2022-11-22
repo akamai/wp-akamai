@@ -117,7 +117,7 @@ $options = get_option( $this->plugin_name );
 					<tr>
 						<th scope="row">
 							<label for="<?php echo esc_attr( $this->plugin_name ); ?>-hostname">
-								<?php _e( 'Public Hostname', 'akamai' ); ?>
+								<?php esc_html_e( 'Public Hostname', 'akamai' ); ?>
 							</label>
 						</th>
 						<td>
